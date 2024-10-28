@@ -46,7 +46,7 @@ const HomePage = ({ }: Props) => {
                 </header>
             </div>
             <main className='py-12 px-8'>
-                <section className='flex flex-col justify-center items-center mx-auto gap-4 w-fit px-4 py-8 bg-slate-800 rounded-lg'>
+                <section className='flex flex-col max-w-screen-md items-center mx-auto gap-4 px-4 py-8 bg-slate-800 rounded-lg'>
                     <h2 className="text-4xl font-light text-center pb-6">
                         Let's get started...
                     </h2>
