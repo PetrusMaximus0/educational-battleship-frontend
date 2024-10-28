@@ -8,7 +8,8 @@ const GamePage = (props: Props) => {
     const { id } = useParams();
 
     return (
-        <main>
+        <main className='flex flex-col gap-2 justify-start'>
+            <Board />
             <Board />
         </main>
     )

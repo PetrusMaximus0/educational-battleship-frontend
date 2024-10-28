@@ -8,7 +8,7 @@ type Props = {
 
 const Cell = ({ data, classes = "" }: Props) => {
     return (
-        <button className={classes}>{data.text}</button>
+        <button className={classes}></button>
     )
 }
 

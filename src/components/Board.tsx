@@ -2,20 +2,21 @@ import Cell from './Cell'
 import { CellData } from '../types';
 
 type Props = {
-    numRows?: number,
-    numCols?: number,
+    colTags?: string[],
+    rowTags?: string[],
 }
 
-const Board = ({ numRows = 10, numCols = 10 }: Props) => {
-    const rowTags: string[] = [];
-    for (let i = 0; i < numRows; i++) {
-        rowTags.push(`Tag: ${i}`);
-    }
+const inColTags: string[] = [
+    "My parent's neighbour", "You", "He", "She", "They", "It", "a", "s", "d", "e"
+];
 
-    const colTags: string[] = [];
-    for (let i = 0; i < numCols; i++) {
-        colTags.push(`Tag: ${i}`);
-    }
+const inRowTags: string[] = [
+    "swim everyday", "brush the dog's teeth and then brush the dog's fur", "make the bed", "vaccum the room", "sweep the floor", "a", "b", "c", "d", "e"
+];
+
+const Board = ({ rowTags = inRowTags, colTags = inColTags }: Props) => {
+    const numRows = rowTags.length;
+    const numCols = colTags.length;
 
     const boardData: CellData[] = [];
     for (let i = 0; i < numRows * numCols; i++) {
@@ -34,32 +35,39 @@ const Board = ({ numRows = 10, numCols = 10 }: Props) => {
     document.documentElement.style.setProperty("--rows", numRows.toString());
 
     return (
-        <div className="game-board mx-auto my-12 w-fit border border-black p-2 text-xs">
-            <div className='row-tags '>
+        <div className="game-board border border-black p-2 text-[0.60rem] my-8 font-semibold mx-auto">
+            <h2
+                className='text-center text-4xl border-t border-b border-black py-4 row-start-1 col-start-1 col-span-2'
+            >
+                Your (Enemy's) Board
+            </h2>
+            <div className='row-tags'>
                 {rowTags.map((row) =>
                     <p
-                        className="p-2 h-16 w-16 flex items-center justify-center border-l border-t border-r last:border-b border-black"
-                        key={row}>
+                        className="overflow-auto p-1 w-full h-16 max-w-28 flex items-start border-l border-t border-r last:border-b border-black"
+                        key={row}
+                    >
+                        {row}
 
                     </p>)
                 }
             </div>
-            <div className='col-tags'>
+            <div className='col-tags w-fit h-fit'>
                 {colTags.map((col) =>
                     <p
-                        className='p-2 h-16 w-16 flex items-center justify-center border-l border-t border-b last:border-r border-black'
-                        key={col}>
+                        className='overflow-auto p-1 w-16 h-full max-h-28 flex items-center justify-start border-l border-t border-b last:border-r border-black'
+                        key={col}
+                    >
+                        {col}
                     </p>)}
             </div>
-            <div className='cells w-full'>
-                {
-                    boardData.map((cell) =>
-                        <Cell
-                            classes={`p-2 w-full cell-border ${cell.pos.y === numRows - 1 ? "cell-border-b " : ""} ${cell.pos.x === numCols - 1 ? "cell-border-r " : ""}`}
-                            key={cell.index}
-                            data={cell}
-                        />)}
-
+            <div className='cells w-fit'>
+                {boardData.map((cell) =>
+                    <Cell
+                        classes={`hover:bg-blue-200 active:bg-black w-16 h-16 cell-border ${cell.pos.y === numRows - 1 ? "cell-border-b " : ""} ${cell.pos.x === numCols - 1 ? "cell-border-r " : ""}`}
+                        key={cell.index}
+                        data={cell}
+                    />)}
             </div>
         </div>
     )
