@@ -1,5 +1,6 @@
-import Cell from './Cell'
 import { CellData } from '../types';
+import Cell from './Cell';
+import Tag from './Tag';
 
 type Props = {
     colTags?: string[],
@@ -35,41 +36,38 @@ const Board = ({ rowTags = inRowTags, colTags = inColTags }: Props) => {
     document.documentElement.style.setProperty("--rows", numRows.toString());
 
     return (
-        <div className="game-board border border-black p-2 text-[0.60rem] my-8 font-semibold mx-auto">
-            <h2
-                className='text-center text-4xl border-t border-b border-black py-4 row-start-1 col-start-1 col-span-2'
-            >
-                Your (Enemy's) Board
-            </h2>
-            <div className='row-tags'>
-                {rowTags.map((row) =>
-                    <p
-                        className="overflow-auto p-1 w-full h-16 max-w-28 flex items-start border-l border-t border-r last:border-b border-black"
-                        key={row}
-                    >
-                        {row}
-
-                    </p>)
-                }
+        <>
+            <div className='grid grid-rows-[auto_1fr] grid-cols-[auto_1fr] bg-slate-800 w-fit rounded-md text-xs'>
+                <div className='p-2 row-start-1 col-start-2 grid grid-flow-col justify-start w-full'>
+                    {inColTags.map((tag) =>
+                        <Tag
+                            classes='flex items-center min-h-16 h-fit max-h-32 w-16 border-r border-t border-b first:border-l overflow-hidden whitespace-nowrap text-ellipsis'
+                            key={tag}
+                            tag={tag}
+                        />
+                    )}
+                </div>
+                <div className='p-2 row-start-2 col-start-1 grid justify-start'>
+                    {inRowTags.map((tag) =>
+                        <Tag
+                            classes='flex items-center w-32 h-16 border-l border-t border-r last:border-b overflow-hidden whitespace-nowrap text-ellipsis'
+                            key={tag}
+                            tag={tag}
+                        />
+                    )}
+                </div>
+                <div className='p-2 row-start-2 col-start-2 grid board-grid-template-col-row'>
+                    {
+                        boardData.map((cell) =>
+                            <Cell
+                                data={cell}
+                                key={cell.index}
+                                classes={`hover:bg-slate-500 active:bg-black w-16 h-16 cell-border ${cell.pos.y === numRows - 1 ? "cell-border-b " : ""} ${cell.pos.x === numCols - 1 ? "cell-border-r " : ""}`}
+                            />)
+                    }
+                </div>
             </div>
-            <div className='col-tags w-fit h-fit'>
-                {colTags.map((col) =>
-                    <p
-                        className='overflow-auto p-1 w-16 h-full max-h-28 flex items-center justify-start border-l border-t border-b last:border-r border-black'
-                        key={col}
-                    >
-                        {col}
-                    </p>)}
-            </div>
-            <div className='cells w-fit'>
-                {boardData.map((cell) =>
-                    <Cell
-                        classes={`hover:bg-blue-200 active:bg-black w-16 h-16 cell-border ${cell.pos.y === numRows - 1 ? "cell-border-b " : ""} ${cell.pos.x === numCols - 1 ? "cell-border-r " : ""}`}
-                        key={cell.index}
-                        data={cell}
-                    />)}
-            </div>
-        </div>
+        </>
     )
 }
 

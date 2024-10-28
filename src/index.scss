@@ -13,7 +13,6 @@ body {
 }
 
 .cells {
-    background-color: lightseagreen;
     min-width: fit-content;
 
     display: grid;
@@ -21,6 +20,11 @@ body {
     grid-template-rows: repeat(var(--rows), 1fr);
     grid-column-start: 2;
     grid-row-start: 3;
+}
+
+.board-grid-template-col-row {
+    grid-template-columns: repeat(var(--columns), 1fr);
+    grid-template-rows: repeat(var(--rows), 1fr);
 }
 
 .game-board {
