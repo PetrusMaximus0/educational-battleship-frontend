@@ -1,4 +1,5 @@
-import React, { ChangeEvent, FormEvent, useState } from 'react'
+import { ChangeEvent, FormEvent, useState } from 'react'
+import { useNavigate } from 'react-router-dom';
 
 type Props = {}
 
@@ -7,9 +8,16 @@ const HomePage = ({ }: Props) => {
     const [loading, setLoading] = useState<boolean>(false);
     const [gameCode, setGameCode] = useState<string | null>(null);
 
+    const navigate = useNavigate();
+
     const onFormSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setLoading(true);
+
+        // Simulate connection
+        setTimeout(() => {
+            navigate(`/game/${gameCode}`);
+        }, 2000)
 
         // Look for game and connect.
         // If error, then show error message.
@@ -24,48 +32,78 @@ const HomePage = ({ }: Props) => {
         setGameCode(newVal);
     }
 
-    return (
-        <main className='flex flex-col items-center gap-4 mt-2'>
-            <div className='flex border justify-center max-w-md min-w-xs w-full py-6'>
-                <button
-                    className='hover:bg-slate-200 hover:text-black border py-2 px-4 text-center w-32'>
-                    Host Game
-                </button>
-            </div>
-            <form
-                onSubmit={onFormSubmit}
-                className='border px-4 py-6 flex flex-col gap-4 w-full max-w-md min-w-xs justify-center items-center '
-            >
-                {!loading && <>
-                    <label
-                        htmlFor="game-code">
-                        Game Code: {" "}
-                        <input
-                            onChange={onInputChange}
-                            value={gameCode || ""}
-                            id="game-code"
-                            name="game-code"
-                            className='placeholder:text-slate-600 w-fit h-full border px-2 bg-slate-200 text-black'
-                            type="text"
-                            placeholder='Enter your Game Code'
-                            maxLength={8}
-                            minLength={8}
-                            required
-                        />
-                    </label>
+    const onHostGame = () => {
+        alert("Creating a new game.");
+        navigate("/game/new");
+    }
 
-                    <button
-                        className='hover:bg-slate-200 hover:text-black border py-2 px-4 text-center w-32'
-                        type="submit"
-                    >
-                        Join
-                    </button>
-                    {error && <p className='place-self-start text-red-800'>Error: {error.message} </p>}
-                </>
-                    || <p>Loading Game...</p>
-                }
-            </form>
-        </main>
+    return (
+        <div className='grid grid-rows-[auto_auto_auto] content-between h-screen bg-black text-white'>
+            <div className='bg-slate-800 py-8 px-8'>
+                <header className='mx-auto max-w-screen-md flex flex-col gap-4 items-center text-center md:text-left'>
+                    <h1 className='text-5xl'>Battle Speak</h1>
+                    <p className='text-lg'>Practice your english speaking and listening skills, while playing a fun strategic game.</p>
+                </header>
+            </div>
+            <main className='py-12 px-8'>
+                <section className='flex flex-col justify-center items-center mx-auto gap-4 w-fit px-4 py-8 bg-slate-800 rounded-lg'>
+                    <h2 className="text-4xl font-light text-center pb-6">
+                        Let's get started...
+                    </h2>
+                    <hr className='border-1 w-full' />
+                    <form name='join-game' className='px-4 py-6 mx-auto flex flex-col gap-4' onSubmit={onFormSubmit} >
+                        <label className='flex gap-6 items-center justify-start text-nowrap' htmlFor="game-code">
+                            Game Code:
+                            <input
+                                className="max-w-48 rounded-md py-1 px-2 text-center placeholder:text-slate-400 placeholder:text-center bg-black text-white text-xl"
+                                type="text"
+                                name="game-code"
+                                id="game-code"
+                                onChange={onInputChange}
+                                value={gameCode ?? ""}
+                                required
+                                minLength={5}
+                                maxLength={5} />
+                        </label>
+                        <p className={error ? "text-red-700 font-semibold" : "text-white" + "text-sm"}>
+                            {!error && !loading &&
+                                <>
+                                    Enter the code provided by your game host.
+                                </>
+                                || error &&
+                                <>
+                                    *{error.message}
+                                </>
+                                || loading &&
+                                <>
+                                    Loading...
+                                </>
+                            }
+                        </p>
+                        <button className='hover:bg-slate-200 hover:text-black rounded-md border py-2 px-6 mx-auto' type="submit">
+                            Join Game
+                        </button>
+                    </form>
+                    <hr className='border-1 w-full' />
+                    <div className="px-4 pt-6 w-full h-full flex justify-center">
+                        <button
+                            className='hover:bg-slate-200 hover:text-black border rounded-md py-2 px-6 text-center'
+                            onClick={onHostGame}
+                        >
+                            Host Game
+                        </button>
+
+                    </div>
+                </section>
+            </main>
+            <footer className='py-12 px-8 text-center font-extralight text-2xl bg-slate-800'>
+                Pedro Silva @ 2024
+                <a className='mx-2 inline-block' href="https://github.com/PetrusMaximus0">
+                    <i className="devicon-github-original"></i>
+                </a>
+            </footer>
+        </div>
+
     )
 }
 
