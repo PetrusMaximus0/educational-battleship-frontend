@@ -20,9 +20,6 @@ export type CellStateColors = {
 }
 
 export type CellTag = string;
-export type CellStateColorKey = keyof CellStateColors;
-
-export type CellAction = "fire" | "mark" | "clear";
 
 //
 

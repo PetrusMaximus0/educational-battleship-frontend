@@ -1,4 +1,4 @@
-import {CellAction, CellData, CellState, CellTag, IInitializeBoard, IUpdateCellState} from '../types';
+import {CellData, CellState, CellTag, IInitializeBoard, IUpdateCellState} from '../types';
 import Cell from './Cell';
 import Tag from './Tag';
 import {useEffect, useState} from "react";
