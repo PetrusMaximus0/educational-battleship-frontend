@@ -37,11 +37,11 @@ const Board = ({ rowTags = inRowTags, colTags = inColTags }: Props) => {
 
     return (
         <>
-            <div className='grid grid-rows-[auto_1fr] grid-cols-[auto_1fr] bg-slate-800 w-fit rounded-md text-xs'>
+            <div className='grid grid-rows-[auto_1fr] grid-cols-[auto_1fr] bg-BgA w-fit rounded-md text-xs'>
                 <div className='p-2 row-start-1 col-start-2 grid grid-flow-col justify-start w-full'>
                     {inColTags.map((tag) =>
                         <Tag
-                            classes='flex items-center min-h-16 h-fit max-h-32 w-16 border-r border-t border-b first:border-l overflow-hidden whitespace-nowrap text-ellipsis'
+                            classes='flex items-center min-h-16 h-fit max-h-32 w-16 first:rounded-l last:rounded-r bg-tagBg border-r border-t border-b first:border-l overflow-hidden whitespace-nowrap text-ellipsis'
                             key={tag}
                             tag={tag}
                         />
@@ -50,7 +50,7 @@ const Board = ({ rowTags = inRowTags, colTags = inColTags }: Props) => {
                 <div className='p-2 row-start-2 col-start-1 grid justify-start'>
                     {inRowTags.map((tag) =>
                         <Tag
-                            classes='flex items-center w-32 h-16 border-l border-t border-r last:border-b overflow-hidden whitespace-nowrap text-ellipsis'
+                            classes='flex items-center w-32 h-16 first:rounded-t last:rounded-b bg-tagBg border-l border-t border-r last:border-b overflow-hidden whitespace-nowrap text-ellipsis'
                             key={tag}
                             tag={tag}
                         />
@@ -62,7 +62,7 @@ const Board = ({ rowTags = inRowTags, colTags = inColTags }: Props) => {
                             <Cell
                                 data={cell}
                                 key={cell.index}
-                                classes={`hover:bg-slate-500 active:bg-black w-16 h-16 cell-border ${cell.pos.y === numRows - 1 ? "cell-border-b " : ""} ${cell.pos.x === numCols - 1 ? "cell-border-r " : ""}`}
+                                classes={`hover:bg-cellHover active:bg-cellActive w-16 h-16 border-cellBorder cell-border ${cell.pos.y === numRows - 1 ? "cell-border-b " : ""} ${cell.pos.x === numCols - 1 ? "cell-border-r " : ""}`}
                             />)
                     }
                 </div>

@@ -17,7 +17,7 @@ const Tag = ({ tag, classes }: Props) => {
             >
                 <div
                     onMouseLeave={() => setSeeDetail(false)}
-                    className={seeDetail ? "mx-1 my-1 border bg-slate-800 flex items-center justify-start absolute scale-150 h-16 w-16 min-w-fit px-4 py-2 rounded-md" : "mx-1"}
+                    className={seeDetail ? "mx-1 my-1 border bg-tagBgHover  flex items-center justify-start absolute scale-150 h-16 w-16 min-w-fit px-4 py-2 rounded-md" : "mx-1"}
                 >
                     {tag}
                 </div>

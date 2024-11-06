@@ -39,15 +39,15 @@ const HomePage = ({ }: Props) => {
     }
 
     return (
-        <div className='grid grid-rows-[auto_auto_auto] content-between h-screen bg-black text-white'>
-            <div className='bg-slate-800 py-8 px-8'>
+        <div className='grid grid-rows-[auto_auto_auto] content-between min-h-screen bg-BgB text-white'>
+            <div className='bg-BgA py-8 px-8'>
                 <header className='mx-auto max-w-screen-md flex flex-col gap-4 items-center text-center md:text-left'>
                     <h1 className='text-5xl'>Battle Speak</h1>
                     <p className='text-lg'>Practice your english speaking and listening skills, while playing a fun strategic game.</p>
                 </header>
             </div>
             <main className='py-12 px-8'>
-                <section className='flex flex-col max-w-screen-md items-center mx-auto gap-4 px-4 py-8 bg-slate-800 rounded-lg'>
+                <section className='flex flex-col max-w-screen-md items-center mx-auto gap-4 px-4 py-8 bg-BgA rounded-lg'>
                     <h2 className="text-4xl font-light text-center pb-6">
                         Let's get started...
                     </h2>
@@ -56,7 +56,7 @@ const HomePage = ({ }: Props) => {
                         <label className='flex gap-6 items-center justify-start text-nowrap' htmlFor="game-code">
                             Game Code:
                             <input
-                                className="max-w-48 rounded-md py-1 px-2 text-center placeholder:text-slate-400 placeholder:text-center bg-black text-white text-xl"
+                                className="max-w-48 rounded-md py-1 px-2 text-center placeholder:text-slate-400 placeholder:text-center bg-inputBgA text-white text-xl"
                                 type="text"
                                 name="game-code"
                                 id="game-code"
@@ -81,14 +81,14 @@ const HomePage = ({ }: Props) => {
                                 </>
                             }
                         </p>
-                        <button className='hover:bg-slate-200 hover:text-black rounded-md border py-2 px-6 mx-auto' type="submit">
+                        <button className='hover:bg-btnBgHover active:bg-btnBgActive bg-btnBg rounded-md border py-2 px-6 mx-auto' type="submit">
                             Join Game
                         </button>
                     </form>
                     <hr className='border-1 w-full' />
                     <div className="px-4 pt-6 w-full h-full flex justify-center">
                         <button
-                            className='hover:bg-slate-200 hover:text-black border rounded-md py-2 px-6 text-center'
+                            className='hover:bg-btnBgHover active:bg-btnBgActive bg-btnBg border rounded-md py-2 px-6 text-center'
                             onClick={onHostGame}
                         >
                             Host Game

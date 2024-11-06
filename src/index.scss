@@ -4,12 +4,22 @@
 
 :root {
     --columns: 4;
-    --rows: 2;
+    --rows: 2;    
+}
+
+#root{
+    min-height: 100%;
+    width: 100%;
 }
 
 body {
     font-family: Verdana, sans-serif;
     font-weight: 500;
+        
+    margin: 0;
+    min-width: 320px;
+    min-height: 100vh;
+    background-color: orangered;
 }
 
 .cells {
@@ -59,17 +69,15 @@ body {
     grid-row-start: 2;
 }
 
-$cell-border-color: blue;
-
 .cell-border {
-    border-top: 1px solid $cell-border-color;
-    border-left: 1px solid $cell-border-color;
+    border-top-width: 1px;
+    border-left-width: 1px;
 
     &-r {
-        border-right: 1px solid $cell-border-color;
+        border-right-width: 1px;
     }
 
     &-b {
-        border-bottom: 1px solid $cell-border-color;
+        border-bottom-width: 1px;
     }
 }
