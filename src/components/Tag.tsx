@@ -13,7 +13,7 @@ const Tag = ({ tag, classes }: Props) => {
             < div
                 onMouseEnter={() => setSeeDetail(true)}
                 onMouseLeave={() => setSeeDetail(false)}
-                className={classes + "relative" + (seeDetail ? "z-50 overflow-visible " : "")}
+                className={classes + "relative"}
             >
                 <div
                     onMouseLeave={() => setSeeDetail(false)}

@@ -23,7 +23,7 @@ const Board = ({boardTitle, onFireAtCell, onClickCell, rowTags, colTags, cellDat
                 <div className='z-10 p-2 row-start-2 col-start-2 grid grid-flow-col justify-start w-full'>
                     {colTags.map((tag) =>
                         <Tag
-                            classes='flex items-center min-h-16 h-fit max-h-32 w-12 first:rounded-l last:rounded-r bg-tagBg border-r border-t border-b first:border-l overflow-clip border whitespace-nowrap text-ellipsis'
+                            classes='flex items-center min-h-16 h-fit max-h-32 w-12 first:rounded-l last:rounded-r bg-tagBg border-r border-t border-b first:border-l overflow-clip whitespace-nowrap text-ellipsis'
                             key={tag}
                             tag={tag}
                         />
