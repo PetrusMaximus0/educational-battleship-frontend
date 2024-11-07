@@ -3,6 +3,7 @@ import Board from '../components/Board';
 import Footer from '../components/Footer';
 import {useEffect, useState} from "react";
 import {CellData, CellTag} from "../types.tsx";
+import {HubConnection, HubConnectionBuilder, LogLevel} from "@microsoft/signalr";
 
 type Props = {
 
@@ -46,6 +47,10 @@ const GamePage = (props: Props) => {
     const [selectedCell, setSelectedCell] = useState<number>(-1);
     const [rowTags, setRowTags] = useState<CellTag[]>([]);
     const [colTags, setColTags] = useState<CellTag[]>([]);
+    const [error, setError] = useState<Error|null>(null);
+    
+    //
+    const [connection, setConnection] = useState<HubConnection|null>(null);
     
     // Handle clicking a cell on the opponents board.
     const handleClickOpponentBoardCell = (index: number) => {
@@ -105,12 +110,33 @@ const GamePage = (props: Props) => {
     }
     
     useEffect(()=>{
-        // Set up event handlers for socket events.
-        // ...
-        // Initialize the board.
-        initBoards();
+        const joinServer = async () => {
+            try {
+                const conn :HubConnection = new HubConnectionBuilder()
+                    .withUrl("http://localhost:5154/battlespeak")
+                    .configureLogging(LogLevel.Information)
+                    .build();
+
+                // Set up handlers.
+                conn.on("UserConnected", (username: string, msg: string)=>{
+                    console.log(username, "says: ", msg);
+                    initBoards();
+                })
+
+                await conn.start();
+                await conn.invoke("JoinGameHub");
+                setConnection(conn);
+                
+            }catch (error) {                
+                setError(new Error(`${error}`));
+            }
+        }
         
+        joinServer();
+               
         return ()=>{
+            connection?.stop();
+            console.log("Clean up finished");
             // Clean up
         } 
     },[])
