@@ -47,7 +47,7 @@ const Cell = ({onClickCell, onCellFire, data, classes = "" }: Props) => {
         >
             { flagged &&
                 <div className={"absolute text-yellow-500 h-full w-full flex justify-center items-center"}>
-                    <Icon path={mdiFlagVariant} size={1}/>
+                    <Icon path={mdiFlagVariant} size={2}/>
                 </div>
             }          
             { data.selected &&
