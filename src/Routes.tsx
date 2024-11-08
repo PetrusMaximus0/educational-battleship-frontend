@@ -8,7 +8,11 @@ export const routes = [
         element: <HomePage />
     },
     {
-        path: "/game/:id",
+        path: "/game/host",
+        element: <GamePage />
+    },
+    {
+        path: "/game/join/:id",
         element: <GamePage />
     },
     {

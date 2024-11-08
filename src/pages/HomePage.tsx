@@ -17,7 +17,7 @@ const HomePage = ({ }: Props) => {
 
         // Simulate connection
         setTimeout(() => {
-            navigate(`/game/${gameCode}`);
+            navigate(`/game/join/${gameCode}`);
         }, 2000)
 
         // Look for game and connect.
@@ -34,8 +34,7 @@ const HomePage = ({ }: Props) => {
     }
 
     const onHostGame = () => {
-        alert("Creating a new game.");
-        navigate("/game/42sd");
+        navigate("/game/host");
     }
 
     return (
