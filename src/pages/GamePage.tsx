@@ -1,56 +1,27 @@
-import { Link, useParams } from 'react-router-dom'
+import {Link} from 'react-router-dom'
 import Board from '../components/Board';
 import Footer from '../components/Footer';
 import {useEffect, useState} from "react";
 import {CellData, CellTag} from "../types.tsx";
-import {HubConnection, HubConnectionBuilder, LogLevel} from "@microsoft/signalr";
+import {closeHub, GameHubConnection, joinHub, onHubEvent, triggerHubEvent} from "../hubs/gameHub.tsx";
+import {inColTags, inRowTags, getBoardData}from "../mockGameData.ts";
 
 type Props = {
 
 }
 
-// Placeholder tags
-const inColTags: CellTag[]  = [
-    "My parent's neighbour", "You", "He", "She", "They", "It", "a", "s", "d", "e"
-];
-
-// Placeholder tags
-const inRowTags: CellTag[] = [
-    "swim everyday", "brush the dog's teeth and then brush the dog's fur", "make the bed", "vacuum the room", "sweep the floor", "a", "b", "c", "d", "e"
-];
-
-// Placeholder function to generate board.
-const getBoardData = () => {
-    // Construct temporary board data to render the cells.
-    const tempBoardData : CellData[] = [];
-    for (let i = 0; i < inRowTags.length * inColTags.length; i++) {
-        const cellData: CellData = {
-            index: i,
-            pos: {
-                x: i % inColTags.length,
-                y: Math.floor(i / inColTags.length)
-            },
-            text: `(${i % inColTags.length}, ${Math.floor(i / inColTags.length)} )`,
-            cellState: "hidden",
-            selected: false,
-        }
-        tempBoardData.push(cellData);
-    }
-    return tempBoardData;
-}
-
-const GamePage = (props: Props) => {
-    const { id } = useParams();
-
+const GamePage = ({}: Props) => {
+    //
     const [playerBoardData, setPlayerBoardData] = useState<CellData[]>([]);
     const [opponentBoardData, setOpponentBoardData] = useState<CellData[]>([]);
     const [selectedCell, setSelectedCell] = useState<number>(-1);
     const [rowTags, setRowTags] = useState<CellTag[]>([]);
     const [colTags, setColTags] = useState<CellTag[]>([]);
-    const [error, setError] = useState<Error|null>(null);
     
     //
-    const [connection, setConnection] = useState<HubConnection|null>(null);
+    const [gameId, setGameId] = useState<string|null>(null);
+    const [error, setError] = useState<Error|null>(null);
+    const [connection, setConnection] = useState<GameHubConnection|null>(null);
     
     // Handle clicking a cell on the opponents board.
     const handleClickOpponentBoardCell = (index: number) => {
@@ -79,7 +50,9 @@ const GamePage = (props: Props) => {
     }
     
     // Handle clicking a cell on the player's board.
-    const handleClickPlayerBoardCell = (index: number) => {}
+    const handleClickPlayerBoardCell = (index: number) => {
+        console.log(index);
+    }
     
     // Initialize the board at game begin.
     const initBoards = () =>{
@@ -97,64 +70,76 @@ const GamePage = (props: Props) => {
             //
     }
 
-    const handleUpdatePlayerBoardData= (newData: CellData[]) =>{
-        setPlayerBoardData([...newData]);
-    }
-    const handleUpdateOpponentBoardData = (newData: CellData[]) =>{
-        setOpponentBoardData([...newData]);
-    }
-    
     const handleFireAtCell = (index: number) => {
         // send cell shot to server and receive new cell state.
-        alert("Fired!");
+        alert(`Fired! at index: ${index} `);
+    }
+    
+    const endServerConnection = async () => {
+        //
+        try {
+            if(!connection) {
+                throw new Error("connection is null when attempting to close server connection");
+            }
+            const result = await closeHub();
+            console.log("Result: ", result);
+            console.log("closed connection");
+            
+        }catch(err){
+            console.log("At end server connection...")
+            setError(err as Error);
+        }    
     }
     
     useEffect(()=>{
-        const joinServer = async () => {
-            try {
-                const conn :HubConnection = new HubConnectionBuilder()
-                    .withUrl("http://localhost:5154/battlespeak")
-                    .configureLogging(LogLevel.Information)
-                    .build();
-
-                // Set up handlers.
-                conn.on("UserConnected", (username: string, msg: string)=>{
-                    console.log(username, "says: ", msg);
-                    initBoards();
-                })
-
-                await conn.start();
-                await conn.invoke("JoinGameHub");
-                setConnection(conn);
-                
-            }catch (error) {
-                if(!(error instanceof Error))
-                    setError(new Error(`${error}`));
-                else 
-                    setError(error);
+        const initHubConnection = async () => {
+            const {connection: conn, error: connectionError} = await joinHub();
+            if(connectionError){
+                setError(connectionError);
+                return;
             }
+            setConnection(conn);                
+            
+            // Set up handlers
+            onHubEvent("onGameStart", (gameId : string) => {
+                setGameId(gameId);
+            })
+            
+            const {error: newGameError} = await triggerHubEvent("NewGame");
+            
+            if(newGameError) {
+                setError(newGameError);
+                return;
+            }
+            setError(null);
         }
         
-        joinServer();
-               
+        (async ()=>{
+            await initHubConnection();
+            initBoards();
+        })()
+        
         return ()=>{
-            connection?.stop();
-            console.log("Clean up finished");
             // Clean up
-        } 
+            (async ()=>{
+                await endServerConnection();
+                console.log("Clean up finished");
+            })();
+        }
     },[])
     
     return (
         <div className='grid grid-rows-[auto_1fr_auto] gap-y-10 h- min-h-screen bg-BgB text-white'>
             <div className='bg-BgA py-8 px-8'>
                 <header className='flex flex-col items-center justify-center gap-6'>
-                    <h1 className='text-4xl'> Current Game: <span className='font-bold'> {id} </span> </h1>
+                    <h1 className='text-4xl'> Current Game: <span className='font-bold'> {gameId || "Connecting..."} </span> </h1>
                     <nav>
                         <ul className={"flex justify-center items-center gap-4"}>
                             <li className={""}>
                                 <Link
                                     className='hover:bg-btnBgHover border border-Text px-4 py-3 bg-btnBg active:bg-btnBgActive rounded-md'
                                     to="/"
+                                    onClick={endServerConnection}
                                 >
                                     Return Home
                                 </Link>                                
