@@ -127,8 +127,11 @@ const GamePage = (props: Props) => {
                 await conn.invoke("JoinGameHub");
                 setConnection(conn);
                 
-            }catch (error) {                
-                setError(new Error(`${error}`));
+            }catch (error) {
+                if(!(error instanceof Error))
+                    setError(new Error(`${error}`));
+                else 
+                    setError(error);
             }
         }
         
@@ -167,23 +170,37 @@ const GamePage = (props: Props) => {
                     </nav>
                 </header>
             </div>
-            <main className='flex gap-4 justify-center items-center'>
-                <Board 
-                    onClickCell={handleClickPlayerBoardCell}
-                    onFireAtCell={handleFireAtCell}
-                    boardTitle={"Your Ships"} 
-                    rowTags={rowTags}
-                    colTags={colTags}
-                    cellData={playerBoardData}                    
-                />
-                <Board 
-                    onClickCell={handleClickOpponentBoardCell} 
-                    onFireAtCell={handleFireAtCell}
-                    boardTitle={"Opponent's Ships"}
-                    rowTags={rowTags}
-                    colTags={colTags}
-                    cellData={opponentBoardData}
-                />
+            <main>
+                {
+                   error &&
+                    <div className='flex flex-col gap-4 justify-center items-center'>                        
+                        <h1 className={"text-4xl"}> 
+                            The game couldn't be started.
+                        </h1>
+                        <p>                            
+                            <span className={"font-bold"}> Reason: </span> {error.message} 
+                        </p> 
+                    </div>
+                    || 
+                    <div className='flex gap-4 justify-center items-center'>
+                        <Board
+                            onClickCell={handleClickPlayerBoardCell}
+                            onFireAtCell={handleFireAtCell}
+                            boardTitle={"Your Ships"}
+                            rowTags={rowTags}
+                            colTags={colTags}
+                            cellData={playerBoardData}
+                        />
+                        <Board
+                            onClickCell={handleClickOpponentBoardCell}
+                            onFireAtCell={handleFireAtCell}
+                            boardTitle={"Opponent's Ships"}
+                            rowTags={rowTags}
+                            colTags={colTags}
+                            cellData={opponentBoardData}
+                        />
+                    </div>
+                }
             </main>
             <Footer />
         </div>
