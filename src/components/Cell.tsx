@@ -2,7 +2,7 @@ import Icon from "@mdi/react";
 import {mdiBullseye, mdiEraser, mdiFlagVariant} from "@mdi/js";
 import {CellData, CellStateColors} from '../types'
 import ActionBtn from "./ActionBtn.tsx";
-import {useEffect, useState} from "react";
+import {useState} from "react";
 
 type Props = {
     onClickCell: (index: number) => void,
@@ -13,6 +13,7 @@ type Props = {
 
 const Cell = ({onClickCell, onCellFire, data, classes = "" }: Props) => {
     const [flagged, setFlagged] = useState<boolean>(false);
+    
     const handleMarkCell = () => {
         if(data.cellState==="hidden" || data.cellState==="miss"){
             setFlagged(true);        
@@ -27,10 +28,6 @@ const Cell = ({onClickCell, onCellFire, data, classes = "" }: Props) => {
         onCellFire(data.index);        
     } 
     
-    useEffect(() => {
-                
-    },[])
-    
     const colors : CellStateColors = {
         hidden: "bg-cellHidden",
         hit: "bg-cellHit",
@@ -40,6 +37,7 @@ const Cell = ({onClickCell, onCellFire, data, classes = "" }: Props) => {
     }
     const cellBg : string = colors[`${data.cellState}`];
     const cellSelectionStyle = data.selected ? " border border-cellBorderSelected " : "";
+    
     return (
         <div 
             onClick={()=>onClickCell(data.index)}
