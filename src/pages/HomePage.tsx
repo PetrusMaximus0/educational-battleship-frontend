@@ -1,5 +1,5 @@
 import { ChangeEvent, FormEvent, useState } from 'react'
-import { useNavigate } from 'react-router-dom';
+import {Link, useNavigate} from 'react-router-dom';
 import Footer from '../components/Footer';
 
 type Props = {}
@@ -11,14 +11,11 @@ const HomePage = ({ }: Props) => {
 
     const navigate = useNavigate();
 
-    const onFormSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    const onJoinGame = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setLoading(true);
 
-        // Simulate connection
-        setTimeout(() => {
-            navigate(`/game/join/${gameCode}`);
-        }, 2000)
+        navigate(`/game/client/connect/${gameCode}`);
 
         // Look for game and connect.
         // If error, then show error message.
@@ -32,26 +29,22 @@ const HomePage = ({ }: Props) => {
         const newVal = e.target.value;
         setGameCode(newVal);
     }
-
-    const onHostGame = () => {
-        navigate("/game/host");
-    }
-
+    
     return (
         <div className='grid grid-rows-[auto_auto_auto] content-between min-h-screen bg-BgB text-white'>
-            <div className='bg-BgA py-8 px-8'>
-                <header className='mx-auto max-w-screen-md flex flex-col gap-4 items-center text-center md:text-left'>
+            <header className='bg-BgA py-8 px-8'>
+                <div className='mx-auto max-w-screen-md flex flex-col gap-4 items-center text-center md:text-left'>
                     <h1 className='text-5xl'>Battle Speak</h1>
                     <p className='text-lg'>Practice your english speaking and listening skills, while playing a fun strategic game.</p>
-                </header>
-            </div>
+                </div>
+            </header>
             <main className='py-12 px-8'>
                 <section className='flex flex-col max-w-screen-md items-center mx-auto gap-4 px-4 py-8 bg-BgA rounded-lg'>
                     <h2 className="text-4xl font-light text-center pb-6">
                         Let's get started...
                     </h2>
                     <hr className='border-1 w-full' />
-                    <form name='join-game' className='px-4 py-6 mx-auto flex flex-col gap-4' onSubmit={onFormSubmit} >
+                    <form name='join-game' className='px-4 py-6 mx-auto flex flex-col gap-4' onSubmit={onJoinGame} >
                         <label className='flex gap-6 items-center justify-start text-nowrap' htmlFor="game-code">
                             Game Code:
                             <input
@@ -60,10 +53,10 @@ const HomePage = ({ }: Props) => {
                                 name="game-code"
                                 id="game-code"
                                 onChange={onInputChange}
-                                value={gameCode ?? ""}
+                                value={gameCode ? gameCode : ""}
                                 required
-                                minLength={5}
-                                maxLength={5} />
+                                minLength={36}
+                                maxLength={36} />
                         </label>
                         <p className={error ? "text-red-700 font-semibold" : "text-white" + "text-sm"}>
                             {!error && !loading &&
@@ -86,19 +79,17 @@ const HomePage = ({ }: Props) => {
                     </form>
                     <hr className='border-1 w-full' />
                     <div className="px-4 pt-6 w-full h-full flex justify-center">
-                        <button
+                        <Link
                             className='hover:bg-btnBgHover active:bg-btnBgActive bg-btnBg border rounded-md py-2 px-6 text-center'
-                            onClick={onHostGame}
+                            to={"/game/tag-setup"}
                         >
                             Host Game
-                        </button>
-
+                        </Link>
                     </div>
                 </section>
             </main>
             <Footer />
         </div>
-
     )
 }
 
