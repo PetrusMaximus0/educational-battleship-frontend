@@ -1,18 +1,14 @@
 
 // Placeholder tags
-import {CellData, CellTag} from "./types.tsx";
+import {CellData, CellTag, GameData} from "./types.tsx";
 
-export const inColTags: CellTag[]  = [
-    "My parent's neighbour", "You", "He", "She", "They", "It", "a", "s", "d", "e"
-];
 
 // Placeholder tags
-export const inRowTags: CellTag[] = [
-    "swim everyday", "brush the dog's teeth and then brush the dog's fur", "make the bed", "vacuum the room", "sweep the floor", "a", "b", "c", "d", "e"
-];
+const inColTags: CellTag[] = ["I", "You", "He", "She", "It", "We", "They"];
+const inRowTags: CellTag[] = ["A cat", "A dog", "A parrot", "A tiger", "A mouse", "A turtle", "A bird" ];
 
 // Placeholder function to generate board.
-export const getBoardData = () => {
+const getBoardData = () => {
     // Construct temporary board data to render the cells.
     const tempBoardData : CellData[] = [];
     for (let i = 0; i < inRowTags.length * inColTags.length; i++) {
@@ -22,11 +18,19 @@ export const getBoardData = () => {
                 x: i % inColTags.length,
                 y: Math.floor(i / inColTags.length)
             },
-            text: `(${i % inColTags.length}, ${Math.floor(i / inColTags.length)} )`,
             cellState: "hidden",
             selected: false,
         }
         tempBoardData.push(cellData);
     }
     return tempBoardData;
+}
+
+export const mockGameData : GameData = {
+    gameId: "id",
+    rowTags: inRowTags,
+    colTags: inColTags,
+    playerBoardData: getBoardData(),
+    opponentBoardData: getBoardData(),
+    playerTurn: false,
 }
