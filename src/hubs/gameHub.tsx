@@ -92,7 +92,7 @@ const getHubConnectionState = () =>{
     return connectionInstance ? connectionInstance.state : null;
 }
 
-const triggerHubEvent = async (eventName: string, ...eventArgs: any[]) => {
+const invokeHubEvent = async (eventName: string, ...eventArgs: any[]) => {
     try {
         if(!connectionInstance) {
             throw new Error("Connection Instance is null");
@@ -110,6 +110,6 @@ const triggerHubEvent = async (eventName: string, ...eventArgs: any[]) => {
     }
 }
 
-export {triggerHubEvent, onHubEvent, onHubClose, closeHub, joinHub, getHubConnectionState}
+export {invokeHubEvent, onHubEvent, onHubClose, closeHub, joinHub, getHubConnectionState}
 
 
