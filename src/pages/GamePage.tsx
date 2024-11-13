@@ -1,14 +1,15 @@
-import {Link} from 'react-router-dom'
+import {Link, useParams} from 'react-router-dom'
 import Board from '../components/Board';
 import Footer from '../components/Footer';
 import {useEffect, useState} from "react";
-import {CellData, CellTag} from "../types.tsx";
-import {closeHub, GameHubConnection, joinHub, onHubEvent, triggerHubEvent} from "../hubs/gameHub.tsx";
-import {inColTags, inRowTags, getBoardData}from "../mockGameData.ts";
+import {CellData, CellTag, GameData} from "../types.tsx";
+import {closeHub, GameHubConnection, joinHub, onHubEvent, invokeHubEvent} from "../hubs/gameHub.tsx";
+import {mockGameData} from "../mockGameData.ts";
 
 type Props = {
-
 }
+
+type GameState = "waiting" | "active"; 
 
 const GamePage = ({}: Props) => {
     //
@@ -17,11 +18,20 @@ const GamePage = ({}: Props) => {
     const [selectedCell, setSelectedCell] = useState<number>(-1);
     const [rowTags, setRowTags] = useState<CellTag[]>([]);
     const [colTags, setColTags] = useState<CellTag[]>([]);
+    const [isPlayerTurn, setIsPlayerTurn] = useState<boolean>(false);
     
     //
     const [gameId, setGameId] = useState<string|null>(null);
     const [error, setError] = useState<Error|null>(null);
     const [connection, setConnection] = useState<GameHubConnection|null>(null);
+    const [gameState, setGameState] = useState<GameState>("waiting");
+    
+    //
+    const [justCopiedId, setJustCopiedId] = useState(false);
+    
+    //
+    const { id } = useParams();
+    
     
     // Handle clicking a cell on the opponents board.
     const handleClickOpponentBoardCell = (index: number) => {
@@ -53,23 +63,32 @@ const GamePage = ({}: Props) => {
     const handleClickPlayerBoardCell = (index: number) => {
         console.log(index);
     }
-    
-    // Initialize the board at game begin.
-    const initBoards = () =>{
-            // Set the css property for the row and col number
-            document.documentElement.style.setProperty("--columns", inColTags.length.toString());
-            document.documentElement.style.setProperty("--rows", inRowTags.length.toString());
 
-            // Obtain and set the row and col tags.
-            setRowTags([...inRowTags]);
-            setColTags([...inColTags]);
+    const updateBoardState = (gameData: GameData) => {
+        //
+        if (selectedCell!==-1){
+            gameData.opponentBoardData[selectedCell].selected = true;
+        }
+        
+        // Set the css property for the row and col number
+        document.documentElement.style.setProperty("--columns", gameData.colTags.length.toString());
+        document.documentElement.style.setProperty("--rows", gameData.rowTags.length.toString());
 
-            // Set the board data as state.
-            setPlayerBoardData([...getBoardData()]);
-            setOpponentBoardData([...getBoardData()]);
-            //
+        // Obtain and set the row and col tags.
+        setRowTags([...gameData.rowTags]);
+        setColTags([...gameData.colTags]);
+
+        // Set the board data as state.
+        setPlayerBoardData([...gameData.playerBoardData]);
+        setOpponentBoardData([...gameData.opponentBoardData]);
+        
+        // Set the Game ID
+        setGameId(gameData.gameId);
+        
+        // Set is player Turn
+        setIsPlayerTurn(gameData.playerTurn);
     }
-
+    
     const handleFireAtCell = (index: number) => {
         // send cell shot to server and receive new cell state.
         alert(`Fired! at index: ${index} `);
@@ -91,6 +110,21 @@ const GamePage = ({}: Props) => {
         }    
     }
     
+    let timerHandler = 0;
+    const handleCopyId = async () => {
+        if(id!==undefined) {
+            // Copy Session ID to the clipboard.
+            await navigator.clipboard.writeText(id);
+            setJustCopiedId(true);        
+            
+            // Set a small timer to change the text of the button.
+            clearTimeout(timerHandler);
+            timerHandler = setTimeout(() =>{
+                setJustCopiedId(false);
+            }, 5000)        
+        }
+    }
+    
     useEffect(()=>{
         const initHubConnection = async () => {
             const {connection: conn, error: connectionError} = await joinHub();
@@ -100,36 +134,63 @@ const GamePage = ({}: Props) => {
             }
             setConnection(conn);                
             
-            // Set up handlers
-            onHubEvent("onGameStart", (gameId : string) => {
-                setGameId(gameId);
+            // Register an event handler for event ReceiveSessionId.
+            onHubEvent("ReceiveSessionId", (gameId : string) => {
+                //
+                mockGameData.gameId = gameId;
+                
+                // Set the Game ID
+                setGameId(mockGameData.gameId);
+                
+                //updateBoardState({...gameData});  
             })
             
-            const {error: newGameError} = await triggerHubEvent("NewGame");
+            // Register an event for event onBoardUpdate.
+            onHubEvent("onBoardUpdate", (newGameData: GameData)=>{
+                updateBoardState(newGameData);
+            });
             
-            if(newGameError) {
-                setError(newGameError);
-                return;
+            onHubEvent("BeginGameSetup", (boardData: CellData[]) => {
+                alert("Received Begin Game Setup!");
+                console.log(boardData);
+                // Skip the ship placement! Mark Ready for game!
+                invokeHubEvent("ClientReady");
+            })
+            
+            if(id===undefined){
+                // Invoke the new game event from the game hub.
+                const {error: newGameError} = await invokeHubEvent("RequestNewSession", mockGameData.colTags, mockGameData.rowTags);
+                if(newGameError) {
+                    setError(newGameError);
+                    return;
+                }
+            }else{
+                // Attempt to join an ongoing session by id.
+                const {error: joinGameError} = await invokeHubEvent("JoinExistingSession", id);
+                if(joinGameError) {
+                    setError(joinGameError);
+                    return;
+                }
             }
+            
             setError(null);
         }
-        
-        (async ()=>{
-            await initHubConnection();
-            initBoards();
-        })()
+
+        (async () => {
+                const {error: joinGameError} = await invokeHubEvent("JoinExistingSession", id);
+                if (joinGameError) {
+                    setError(joinGameError);
+                }
+            }
+        )();
         
         return ()=>{
             // Clean up
-            (async ()=>{
-                await endServerConnection();
-                console.log("Clean up finished");
-            })();
         }
     },[])
     
     return (
-        <div className='grid grid-rows-[auto_1fr_auto] gap-y-10 h- min-h-screen bg-BgB text-white'>
+        <div className='grid grid-rows-[auto_1fr_auto] gap-y-10 min-h-screen bg-BgB text-white'>
             <div className='bg-BgA py-8 px-8'>
                 <header className='flex flex-col items-center justify-center gap-6'>
                     <h1 className='text-4xl'> Current Game: <span className='font-bold'> {gameId || "Connecting..."} </span> </h1>
@@ -158,36 +219,60 @@ const GamePage = ({}: Props) => {
             <main>
                 {
                    error &&
-                    <div className='flex flex-col gap-4 justify-center items-center'>                        
-                        <h1 className={"text-4xl"}> 
+                    <section className='flex flex-col gap-4 justify-center items-center'>                        
+                        <h2 className={"text-4xl"}> 
                             The game couldn't be started.
-                        </h1>
+                        </h2>
                         <p>                            
                             <span className={"font-bold"}> Reason: </span> {error.message} 
                         </p> 
-                    </div>
-                    || 
-                    <div className='flex gap-4 justify-center items-center'>
-                        <Board
-                            onClickCell={handleClickPlayerBoardCell}
-                            onFireAtCell={handleFireAtCell}
-                            boardTitle={"Your Ships"}
-                            rowTags={rowTags}
-                            colTags={colTags}
-                            cellData={playerBoardData}
-                        />
-                        <Board
-                            onClickCell={handleClickOpponentBoardCell}
-                            onFireAtCell={handleFireAtCell}
-                            boardTitle={"Opponent's Ships"}
-                            rowTags={rowTags}
-                            colTags={colTags}
-                            cellData={opponentBoardData}
-                        />
-                    </div>
+                    </section>
+                    || gameState === "active" &&
+                    <section className={"text-center"}>
+                        <h2 className={"text-4xl py-4 my-4 bg-BgA"}> {isPlayerTurn ? "Your Turn to play!" : "Opponent's Turn to play" } </h2>
+                        <div className='flex gap-4 justify-center items-center'>
+                            <Board
+                                onClickCell={handleClickPlayerBoardCell}
+                                onFireAtCell={handleFireAtCell}
+                                boardTitle={"Your Ships"}
+                                rowTags={rowTags}
+                                colTags={colTags}
+                                cellData={playerBoardData}
+                            />
+                            <Board
+                                onClickCell={handleClickOpponentBoardCell}
+                                onFireAtCell={handleFireAtCell}
+                                boardTitle={"Opponent's Ships"}
+                                rowTags={rowTags}
+                                colTags={colTags}
+                                cellData={opponentBoardData}
+                            />
+                        </div>
+                    </section>
+                    || gameState === "waiting" &&
+                    <section className={"text-center"}>
+                        <h2> Waiting for player to join... </h2>
+                        <div className={"text-center"}>
+                            <h2 className={"mb-4 text-xl"}> Your session ID: </h2>
+                            <div className={"flex gap-2 justify-center items-center"}>
+                                <p
+                                    className={"my-2 flex gap-2 justify-center items-center"}
+                                >
+                                    {id}
+                                </p>
+                                <button
+                                    className={"hover:bg-btnBgHover active:bg-btnBgActive border px-3 py-2 rounded-sm"}
+                                    onClick={handleCopyId}
+                                >
+                                    {justCopiedId? "Copied!" : "Copy ID"}
+                                </button>
+
+                            </div>
+                        </div>
+                    </section>
                 }
             </main>
-            <Footer />
+            <Footer/>
         </div>
     )
 }
