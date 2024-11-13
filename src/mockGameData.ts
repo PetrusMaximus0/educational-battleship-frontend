@@ -1,6 +1,6 @@
 
 // Placeholder tags
-import {CellData, CellTag, GameData} from "./types.tsx";
+import {CellData, CellTag, GameData, ShipData} from "./types.tsx";
 
 
 // Placeholder tags
@@ -25,6 +25,36 @@ const getBoardData = () => {
     }
     return tempBoardData;
 }
+
+export const mockShipData : ShipData[] = [
+    {
+        id: "ship-1",
+        type: "destroyer", // define the types !
+        size: 3, // 1 to 4
+        orientation: [1,0], // 0 to 3 -> clockwise North to West
+    },{
+        id: "ship-2",    
+        type: "submarine", // define the types !
+        size: 1, // 1 to 4
+        orientation: [1,0], // 0 to 3 -> clockwise North to West
+    },{
+        id:"ship-3",
+        type: "submarine", // define the types !
+        size: 1, // 1 to 4
+        orientation: [1,0], // 0 to 3 -> clockwise North to West
+    },{
+        id: "ship-4",
+        type: "carrier", // define the types !
+        size: 4, // 1 to 4
+        orientation: [1,0], // 0 to 3 -> clockwise North to West
+    },
+    {
+        id: "ship-5",
+        type: "frigate", // define the types !
+        size: 2, // 1 to 4
+        orientation: [1,0], // 0 to 3 -> clockwise North to West
+    }
+]
 
 export const mockGameData : GameData = {
     gameId: "id",
