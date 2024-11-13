@@ -1,4 +1,4 @@
-export type CellState = "hidden" | "hit" | "ship" | "miss" | "sunk";
+export type CellState = "hidden" | "hit" | "ship" | "miss" | "sunk" | "validPlacement" | "invalidPlacement";
 
 export type CellData = {
     index: number,
@@ -7,6 +7,7 @@ export type CellData = {
         y: number,
     }
     cellState: CellState,
+    unit?: ShipData | null,
     selected?: boolean,
 }
 
@@ -16,6 +17,8 @@ export type CellStateColors = {
     hit: string,
     ship: string,
     sunk: string,
+    validPlacement: string,
+    invalidPlacement: string,
 }
 
 export type CellTag = string;
