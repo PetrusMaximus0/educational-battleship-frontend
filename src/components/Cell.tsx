@@ -2,17 +2,16 @@ import Icon from "@mdi/react";
 import {mdiBullseye, mdiEraser, mdiFlagVariant} from "@mdi/js";
 import {CellData, CellStateColors} from '../types'
 import ActionBtn from "./ActionBtn.tsx";
-import { useState } from "react";
+import React, { useState } from "react";
 
 type Props = {
-    onClickCell: (index: number) => void,
-    onCellFire: (index: number) => void,
     data: CellData,
-    onDrop? : (index: number) => void,
-    onDragOver?: (index: number) => void,
+    onClickCell?: (index: number) => void,
+    onCellFire?: (index: number) => void,
+    onMouseEnter?: (index: number) => void,
     classes?: string,
 }
-const Cell = ({onClickCell, onCellFire, data, onDrop, onDragOver, classes = ""}: Props) => {
+const Cell = ({onClickCell, onCellFire, data, onMouseEnter, classes = ""}: Props) => {
     const [flagged, setFlagged] = useState<boolean>(false);
 
     const handleMarkCell = () => {
@@ -23,15 +22,17 @@ const Cell = ({onClickCell, onCellFire, data, onDrop, onDragOver, classes = ""}:
     const handleClearCell = () => {
         setFlagged(false);
     }
-
     const handleCellFire = () => {
         setFlagged(false);
-        onCellFire(data.index);
+        if(onCellFire) onCellFire(data.index);
     }
-
-    const handleDragOver = (e : React.DragEvent) => {
+    const handleMouseEnter = (e : React.MouseEvent) => {
         e.preventDefault();
-        if(onDragOver) onDragOver(data.index);
+        if(onMouseEnter) onMouseEnter(data.index);
+    }
+    const handleClickCell = (e: React.MouseEvent) => {
+        e.preventDefault();
+        if(onClickCell) onClickCell(data.index);
     }
     
     const colors: CellStateColors = {
@@ -50,9 +51,8 @@ const Cell = ({onClickCell, onCellFire, data, onDrop, onDragOver, classes = ""}:
         <div 
             className={classes + cellBg + cellSelectionStyle}
             id={`${data.index}`}
-            onClick={()=>onClickCell(data.index)}
-            onDrop={onDrop ? ()=>onDrop(data.index) : ()=>{}}
-            onDragOver={handleDragOver}
+            onClick={handleClickCell}
+            onMouseEnter={handleMouseEnter}
         >
             { flagged &&
                 <div className={"absolute text-yellow-500 h-full w-full flex justify-center items-center"}>
@@ -73,8 +73,7 @@ const Cell = ({onClickCell, onCellFire, data, onDrop, onDragOver, classes = ""}:
                         <Icon className={"text-actionBtnClear"} path={mdiEraser} size={1}/>
                     </ActionBtn>
                 </div>
-            }
-            
+            }            
         </div>
     )
 }

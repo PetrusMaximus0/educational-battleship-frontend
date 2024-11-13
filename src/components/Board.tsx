@@ -7,13 +7,12 @@ type Props = {
     rowTags: CellTag[];
     colTags: CellTag[];
     cellData: CellData[];
-    onClickCell: (index: number) => void;
+    onMouseEnterCell?: (index: number) => void;
     onFireAtCell?: (index: number) => void;
-    onDropOnCell?: (index: number) => void;
-    onDragOverCell?: (index: number) => void;
+    onClickCell?: (index: number) => void;
 }
 
-const Board = ({boardTitle, onFireAtCell, onClickCell, rowTags, colTags, cellData, onDropOnCell, onDragOverCell}: Props) => {
+const Board = ({boardTitle, rowTags, colTags, cellData, onMouseEnterCell, onFireAtCell, onClickCell}: Props) => {
     return (
         <div className='grid grid-rows-[auto_auto_1fr] grid-cols-[auto_1fr] w-fit rounded-md text-xs bg-BgA'>
             <h2 className="py-3.5 justify-self-center row-start-1 text-3xl col-span-2">
@@ -40,13 +39,12 @@ const Board = ({boardTitle, onFireAtCell, onClickCell, rowTags, colTags, cellDat
             <div className='p-2 row-start-3 col-start-2 grid board-grid-template-col-row justify-self-start'>
                 {cellData.map((cell) =>
                     <Cell
+                        onMouseEnter={onMouseEnterCell}
                         onClickCell={onClickCell}
-                        onDrop={onDropOnCell ? onDropOnCell : ()=>{}}
-                        onDragOver={onDragOverCell ? onDragOverCell : ()=>{}}
+                        onCellFire={onFireAtCell}
                         data={cell}
                         key={cell.index}
                         classes={`relative hover:border-cellBorderHover hover:border active:bg-cellActive w-12 h-12 border-cellBorder cell-border ${cell.pos.y === rowTags.length - 1 ? "cell-border-b " : ""} ${cell.pos.x === colTags.length - 1 ? "cell-border-r " : ""}`}
-                        onCellFire={onFireAtCell ? onFireAtCell:()=>{}}
                     />
                     )}
             </div>
