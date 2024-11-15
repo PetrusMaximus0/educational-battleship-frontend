@@ -58,17 +58,54 @@ const ShipSetupPage = () => {
     
      // place a ship given the coordinates and the ship data
     const placeShip = (shipToPlace: ShipData, placementCoordinates: number[]) => {
-        // Placement is valid. Place ship.
         const newBoardData: CellData[] = [...cellData];
+        
         for(let i = 0; i < shipToPlace.size; i++){
             newBoardData[placementCoordinates[0] + placementCoordinates[1]*colTags.length].cellState = "ship";
             newBoardData[placementCoordinates[0] + placementCoordinates[1]*colTags.length].unit = shipToPlace;
             placementCoordinates[0] += shipToPlace.orientation[0];
             placementCoordinates[1] += shipToPlace.orientation[1];
         }
+        
         setCellData(newBoardData);
     }
 
+    const placeShipsRandomly = () => {
+        // Reset the current ships
+        resetShipPlacement();
+        
+        const boardWidth = colTags.length;
+        const boardHeight = colTags.length;
+        
+        //
+        const newShipPool = [...shipPool];
+        
+        //
+        newShipPool
+            .forEach((item)=>{
+            // This could be an infinite loop, if you had the courage.
+            for(let i = 0; i<10000; i++){
+                const randomCoordinates = [
+                    Math.floor(Math.random() * boardWidth),
+                    Math.floor(Math.random() * boardHeight)
+                ];
+                const randomDirection = () => {
+                    const vertical = Math.random() > 0.5;
+                    return vertical ? [1,0] : [0,1];
+                };
+
+                item.ship.orientation = randomDirection() as ShipOrientation;
+                if(isValidShipPlacement(item.ship, randomCoordinates, boardHeight, boardWidth, cellData)){
+                    placeShip(item.ship, randomCoordinates);
+                    item.placed = true;
+                    break;
+                }
+            }
+        })
+
+        setShipPool(newShipPool);
+    }
+    
     const renderShipPlacementFeedback = (candidateShip: ShipData, cellIndex: number) =>{
         if(!candidateShip) return;       
         
@@ -382,28 +419,22 @@ const ShipSetupPage = () => {
                         <div className={"flex gap-2 justify-between items-start"}>
                             <ul className={"px-2 py-1 flex flex-col gap-2"}>
                                 <h3 className={"font-light text-xl border-b"}> Available Ships </h3>
-                                {shipPool.map((item: ShipPoolItem) => 
-                                    {
-                                        if(item.placed) return <></>
-                                        return <li key={item.ship.id}>
-                                            <h3 className={"capitalize"}> {item.ship.type} </h3>
-                                            <Ship data={item.ship} isPlaced={false} onMouseDown={handleClickOnShip}/>
-                                        </li>
-                                    })
-                                }                              
+                                {shipPool.filter((item)=>!item.placed).map((item: ShipPoolItem) => 
+                                    <li key={item.ship.id}>
+                                        <h3 className={"capitalize"}> {item.ship.type} </h3>
+                                        <Ship data={item.ship} isPlaced={false} onMouseDown={handleClickOnShip} onMouseUp={()=>setSelectedShip(null)}/>
+                                    </li>
+                                )}                                
                             </ul>
                             <hr/>
                             <ul className={"px-2 py-1 flex flex-col gap-2"}>
                                 <h3 className={"font-light text-xl border-b"}> Placed Ships </h3>
-                                {shipPool.map((item: ShipPoolItem) =>
-                                {
-                                    if (!item.placed) return <></>
-                                    return <li key={item.ship.id}>
+                                {shipPool.filter((item)=>item.placed).map((item: ShipPoolItem) =>
+                                    <li key={item.ship.id}>
                                         <h3 className={"capitalize"}> {item.ship.type} </h3>
                                         <Ship data={item.ship} isPlaced={true}/>
                                     </li>
-                                })
-                                }
+                                )}
                             </ul>
                         </div>                       
                         <button
@@ -414,6 +445,7 @@ const ShipSetupPage = () => {
                         </button>
                         <button
                             className={"border px-3 py-2 mt-2 rounded-sm"}
+                            onClick={placeShipsRandomly}
                         >
                             Randomize
                         </button>
