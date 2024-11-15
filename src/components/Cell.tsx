@@ -9,9 +9,11 @@ type Props = {
     onClickCell?: (index: number) => void,
     onCellFire?: (index: number) => void,
     onMouseEnter?: (index: number) => void,
+    onMouseUp?: (index:number) => void,
+    onMouseDown?: (index:number) => void
     classes?: string,
 }
-const Cell = ({onClickCell, onCellFire, data, onMouseEnter, classes = ""}: Props) => {
+const Cell = ({onClickCell, onCellFire, data, onMouseEnter, onMouseUp, onMouseDown, classes = ""}: Props) => {
     const [flagged, setFlagged] = useState<boolean>(false);
 
     const handleMarkCell = () => {
@@ -33,6 +35,14 @@ const Cell = ({onClickCell, onCellFire, data, onMouseEnter, classes = ""}: Props
     const handleClickCell = (e: React.MouseEvent) => {
         e.preventDefault();
         if(onClickCell) onClickCell(data.index);
+    }    
+    const handleMouseUp = (e: React.MouseEvent) => {
+        e.preventDefault();
+        if(onMouseUp) onMouseUp(data.index);
+    }    
+    const handleMouseDown = (e: React.MouseEvent) =>{
+        e.preventDefault();
+        if(onMouseDown) onMouseDown(data.index);
     }
     
     const colors: CellStateColors = {
@@ -52,7 +62,9 @@ const Cell = ({onClickCell, onCellFire, data, onMouseEnter, classes = ""}: Props
             className={classes + cellBg + cellSelectionStyle}
             id={`${data.index}`}
             onClick={handleClickCell}
+            onMouseDown={handleMouseDown}
             onMouseEnter={handleMouseEnter}
+            onMouseUp={handleMouseUp}
         >
             { flagged &&
                 <div className={"absolute text-yellow-500 h-full w-full flex justify-center items-center"}>
