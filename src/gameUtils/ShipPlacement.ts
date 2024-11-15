@@ -1,17 +1,15 @@
-import {CellData, ShipData} from "../types.tsx";
+import {CellData, ShipData, ShipOrientation} from "../types.tsx";
 
 const inBounds = (coord: number, ort: number, len: number, boardDim: number) => {
     return coord >= 0
-        && coord <= boardDim
-        && coord + ort * len <= boardDim
-        && coord + ort * len >= 0;
+        && coord <= boardDim       
+        && coord + ort * (len) <= boardDim
+        && coord + ort * (len-1) >= 0;
 }
 
 // By storing ship part positions it's possible to simply calculate the manhattan distance to every ship part 
 // and check if it is greater to one, in which case the placement is valid.
-const noNeighbors = (rowTags: string[], colTags: string[], newCoords: number[], cellData: CellData[]) => {
-    const height = rowTags.length;
-    const width = colTags.length;
+const noNeighbors = (height: number, width: number, newCoords: number[], cellData: CellData[]) => {
 
     // Check horizontal
     let tempCoords = [newCoords[0], newCoords[1] - 1];
@@ -67,14 +65,14 @@ const noNeighbors = (rowTags: string[], colTags: string[], newCoords: number[], 
     return true;
 }
 
-const cellsFree  = (cellData:CellData[], rowTags:string[], colTags:string[], placementCoordinates: number[], candidateShip: ShipData) => {
+const cellsFree  = (cellData:CellData[], height: number, width: number, placementCoordinates: number[], candidateShip: ShipData) => {
     for (let i = 0; i < candidateShip.size; i += 1) {
         const newCoords = [
             placementCoordinates[0] + i * candidateShip.orientation[0],
             placementCoordinates[1] + i * candidateShip.orientation[1]
         ];
-        if (cellData[newCoords[0] + newCoords[1] * rowTags.length].cellState === "ship" ||
-            !noNeighbors(rowTags, colTags, newCoords, cellData))
+        if (cellData[newCoords[0] + newCoords[1] * height].cellState === "ship" ||
+            !noNeighbors(height, width, newCoords, cellData))
         {
             return false;
         }
@@ -83,17 +81,17 @@ const cellsFree  = (cellData:CellData[], rowTags:string[], colTags:string[], pla
 }
 
 // Returns true if the current ship placement is valid, and false otherwise.
-export const isValidShipPlacement = (candidateShip: ShipData, placementCoordinates: number[], rowTags: string[], colTags: string[], cellData: CellData[]) =>{
+export const isValidShipPlacement = (candidateShip: ShipData, placementCoordinates: number[], height: number, width: number, cellData: CellData[]) =>{
 
     // Check if the ship is within the board's bounds.
-    const XValid = inBounds(placementCoordinates[0], candidateShip.orientation[0], candidateShip.size, colTags.length);
-    const YValid = inBounds(placementCoordinates[1], candidateShip.orientation[1], candidateShip.size, rowTags.length);
+    const XValid = inBounds(placementCoordinates[0], candidateShip.orientation[0], candidateShip.size, width);
+    const YValid = inBounds(placementCoordinates[1], candidateShip.orientation[1], candidateShip.size, height);
     if(!XValid || !YValid) {
         return false
     }
 
     // Check for neighboring ships not in the way of placement
-    if(!cellsFree(cellData, rowTags, colTags, placementCoordinates, candidateShip)){
+    if(!cellsFree(cellData, height, width, placementCoordinates, candidateShip)){
         return false
     }
 
@@ -101,3 +99,15 @@ export const isValidShipPlacement = (candidateShip: ShipData, placementCoordinat
     return true;
 
 }
+
+export const rotateShip = (candidateShip: ShipData) => {
+    if(candidateShip.orientation[0] === 1 && candidateShip.orientation[1]===0){
+        candidateShip.orientation = [0,1];
+    }else if(candidateShip.orientation[0] === -1 && candidateShip.orientation[1]===0){
+        candidateShip.orientation = [0,-1];
+    }else if(candidateShip.orientation[0] === 0 && candidateShip.orientation[1]=== 1){
+        candidateShip.orientation = [-1,0];
+    }else if(candidateShip.orientation[0] === 0 && candidateShip.orientation[1]===-1){
+        candidateShip.orientation = [1,0];
+    }
+} 
