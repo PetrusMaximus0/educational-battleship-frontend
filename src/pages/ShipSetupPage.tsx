@@ -2,11 +2,11 @@ import {Link, useParams} from "react-router-dom";
 import Footer from "../components/Footer.tsx";
 import React, {useEffect, useState} from "react";
 import {invokeHubEvent, onHubEvent} from "../hubs/gameHub.tsx";
-import {CellData, ShipData} from "../types.tsx";
+import {CellData, ShipData, ShipOrientation} from "../types.tsx";
 import Board from "../components/Board.tsx";
 import {mockGameData, mockShipData} from "../mockGameData.ts";
 import Ship from "../components/Ship.tsx";
-import {isValidShipPlacement} from "../gameUtils/ShipPlacement.ts";
+import {isValidShipPlacement, rotateShip} from "../gameUtils/ShipPlacement.ts";
 
 type SetupState = "waiting for players" | "placing ships" | "ships placed" | "player ready";
 type ShipPoolItem = {ship: ShipData, placed: boolean};
@@ -30,6 +30,7 @@ const ShipSetupPage = () => {
     //
     const [selectedShip, setSelectedShip] = useState<ShipData|null>(null);
     const [shipBrushPos, setShipBrushPos] = useState<{x: number; y: number}>({x:0,y:0});
+    const [focusedCellIndex, setFocusedCellIndex] = useState<number>(-1);
 
     // Handlers for session connectivity and game setup state.
     let timerHandler = 0;
@@ -69,6 +70,8 @@ const ShipSetupPage = () => {
     }
 
     const renderShipPlacementFeedback = (candidateShip: ShipData, cellIndex: number) =>{
+        if(!candidateShip) return;       
+        
         const newBoardData: CellData[] = [...cellData];
         
         // Remove all invalid placement cell states.
@@ -79,8 +82,8 @@ const ShipSetupPage = () => {
         })
         
         // Verify the ship can be placed in this location according to the rules.
-        const placementCoordinates = [cellData[cellIndex].pos.x, cellData[cellIndex].pos.y];
-        const validPlacement = isValidShipPlacement(candidateShip, placementCoordinates, rowTags, colTags, cellData);
+        const placementCoordinates = [newBoardData[cellIndex].pos.x, newBoardData[cellIndex].pos.y];
+        const validPlacement = isValidShipPlacement(candidateShip, placementCoordinates, rowTags.length, colTags.length, newBoardData);
         
         if(validPlacement){
             for(let i = 0; i < candidateShip.size; i++){
@@ -113,8 +116,11 @@ const ShipSetupPage = () => {
 
         // Verify the ship can be placed in this location according to the rules.
         const placementCoordinates = [cellData[cellIndex].pos.x, cellData[cellIndex].pos.y];
-        const validPlacement = isValidShipPlacement(selectedShip, placementCoordinates, rowTags, colTags, cellData);
-        if(!validPlacement) return
+        const validPlacement = isValidShipPlacement(selectedShip, placementCoordinates, rowTags.length, colTags.length, cellData);
+        if(!validPlacement) {
+            setSelectedShip(null);
+            return;
+        }
 
         // Placement is valid. Place ship.
         placeShip(selectedShip, placementCoordinates);
@@ -143,10 +149,11 @@ const ShipSetupPage = () => {
     }
         
     const handleShipDragOverCell = (index: number) => {
-        renderShipPlacementFeedback(selectedShip!, index);        
+        setFocusedCellIndex(index);
+        if(selectedShip) renderShipPlacementFeedback(selectedShip, index);        
     }
     
-    const handleClickOnCell = (index: number) => {
+    const handleMouseDownOnCell = (index: number) => {
         if(selectedShip) {
             handleShipDropOnCell(index);
         }else {
@@ -193,7 +200,36 @@ const ShipSetupPage = () => {
         }
     }
     
-    useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {        
+        // Ignore event if the key press was not r
+        if(e.key!=="r") return;
+
+        if(selectedShip){
+            const newShip = {...selectedShip};
+            rotateShip(newShip);
+            setSelectedShip(newShip);
+            renderShipPlacementFeedback(newShip, focusedCellIndex);
+        }
+        e.preventDefault();        
+    }
+
+    const getShipStyleTransform = () => {
+        if (!selectedShip) return "translate(-50%, -50%) rotate(0deg)";
+
+        const ort = selectedShip.orientation;
+        // Determine rotation and offsets based on orientation
+        if (ort[0] === -1) {
+            return `translate(calc(-50% - 50px), -50%) rotate(180deg)`; // West
+        } else if (ort[1] === 1) {
+            return `translate(-50%, calc(-50% + 50px)) rotate(90deg)`; // South
+        } else if (ort[1] === -1) {
+            return `translate(-50%, calc(-50% - 50px)) rotate(-90deg)`; // North
+        } else {
+            return `translate(calc(-50% + 50px), -50%) rotate(0deg)`; // East
+        }
+    };
+    
+    useEffect(() => {        
         // Set the css property for the row and col number
         document.documentElement.style.setProperty("--columns", colTags.length.toString());
         document.documentElement.style.setProperty("--rows", rowTags.length.toString());
@@ -231,8 +267,19 @@ const ShipSetupPage = () => {
         })
         setShipPool([...newShipPool]);
         setGameSetupState("placing ships");
+        
+        return ()=>{}
        
     },[])
+
+    useEffect(() => {
+        document.addEventListener("keydown", handleKeyDown);
+        return () => {
+            document.removeEventListener("keydown", handleKeyDown);
+        }
+    }, [selectedShip, focusedCellIndex]);
+
+
     
     return (
         <div 
@@ -259,6 +306,7 @@ const ShipSetupPage = () => {
                 className={"relative"}
                 onMouseMove={handleShipDragMove}
                 onMouseLeave={()=>setSelectedShip(null)}
+                onMouseUp={()=>setSelectedShip(null)}
             >
                 {gameSetupState === "waiting for players" && 
                 <section className={"text-center"}>
@@ -325,7 +373,8 @@ const ShipSetupPage = () => {
                         rowTags={rowTags}
                         colTags={colTags}
                         cellData={cellData}
-                        onClickCell={handleClickOnCell}
+                        onMouseUpCell={handleShipDropOnCell}
+                        onMouseDownCell={handleMouseDownOnCell}
                         onMouseEnterCell={handleShipDragOverCell}
                     />
                     <section id={"ShipList"} className={"grid grid-rows-[auto_1fr_auto_auto] gap-y-1 h-full bg-BgA py-3 px-2 "}>
@@ -371,12 +420,15 @@ const ShipSetupPage = () => {
                     </section>
                 </section>}
                 { selectedShip &&
-                    <div className={`absolute translate-y-1/2`}
+                    <div 
+                        className={`absolute pointer-events-none`}
                         id={"ShipBrush"}     
                         style={{
                             zIndex: 10000,
                             left:`${shipBrushPos.x}px`, 
                             top:`${shipBrushPos.y}px`,
+                            transform: getShipStyleTransform(),
+                            transformOrigin: "center center"
                         }}
                     >
                         <Ship data={selectedShip} isPlaced={true}  />
