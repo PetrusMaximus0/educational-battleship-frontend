@@ -17,7 +17,7 @@ const Cell = ({onClickCell, onCellFire, data, onMouseEnter, onMouseUp, onMouseDo
     const [flagged, setFlagged] = useState<boolean>(false);
 
     const handleMarkCell = () => {
-        if (data.cellState === "hidden" || data.cellState === "miss") {
+        if (data.state === "hidden" || data.state === "miss") {
             setFlagged(true);
         }
     }
@@ -54,7 +54,7 @@ const Cell = ({onClickCell, onCellFire, data, onMouseEnter, onMouseUp, onMouseDo
         validPlacement: "bg-green-500",
         invalidPlacement:"bg-red-600",
     }
-    const cellBg: string = colors[`${data.cellState}`];
+    const cellBg: string = colors[`${data.state}`];
     const cellSelectionStyle = data.selected ? " border border-cellBorderSelected " : "";
     
     return (

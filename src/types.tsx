@@ -6,7 +6,7 @@ export type CellData = {
         x: number,
         y: number,
     }
-    cellState: CellState,
+    state: CellState,
     unit?: ShipData | null,
     selected?: boolean,
 }
@@ -39,8 +39,8 @@ export type IInitializeBoard = (inColTags: CellTag[], inRowTags: CellTag[], inCe
 export type IUpdateCellState = (cellIndex: number, newCellState: CellState) => void;
 
 //
-export type ShipType = "destroyer" | "submarine" | "carrier" | "frigate";
-export type ShipSize = 1 | 2 | 3 | 4;
+export type ShipType = "destroyer" | "submarine" | "carrier" | "frigate" | "battleship";
+export type ShipSize = 1 | 2 | 3 | 4 | 5;
 export type ShipOrientation = [1,0]|[-1,0]|[0,1]|[0,-1];
 export type ShipData = {
     id: string,

@@ -61,7 +61,7 @@ const ShipSetupPage = () => {
         const newBoardData: CellData[] = [...cellData];
         
         for(let i = 0; i < shipToPlace.size; i++){
-            newBoardData[placementCoordinates[0] + placementCoordinates[1]*colTags.length].cellState = "ship";
+            newBoardData[placementCoordinates[0] + placementCoordinates[1]*colTags.length].state = "ship";
             newBoardData[placementCoordinates[0] + placementCoordinates[1]*colTags.length].unit = shipToPlace;
             placementCoordinates[0] += shipToPlace.orientation[0];
             placementCoordinates[1] += shipToPlace.orientation[1];
@@ -120,8 +120,8 @@ const ShipSetupPage = () => {
         
         // Remove all invalid placement cell states.
         newBoardData.forEach((cell)=>{
-            if(cell.cellState === "invalidPlacement" || cell.cellState === "validPlacement") {
-                cell.cellState = "hidden";
+            if(cell.state === "invalidPlacement" || cell.state === "validPlacement") {
+                cell.state = "hidden";
             }
         })
         
@@ -131,12 +131,12 @@ const ShipSetupPage = () => {
         
         if(validPlacement){
             for(let i = 0; i < candidateShip.size; i++){
-                newBoardData[placementCoordinates[0] + placementCoordinates[1]*colTags.length].cellState = "validPlacement";
+                newBoardData[placementCoordinates[0] + placementCoordinates[1]*colTags.length].state = "validPlacement";
                 placementCoordinates[0] += candidateShip.orientation[0];
                 placementCoordinates[1] += candidateShip.orientation[1];
             }
-        } else if(!validPlacement && newBoardData[cellIndex].cellState !== "ship"){
-            newBoardData[cellIndex].cellState = "invalidPlacement";
+        } else if(!validPlacement && newBoardData[cellIndex].state !== "ship"){
+            newBoardData[cellIndex].state = "invalidPlacement";
         }
 
         setCellData(newBoardData);
@@ -145,7 +145,7 @@ const ShipSetupPage = () => {
     // Reset ship placement
     const resetShipPlacement = () => {
         const newBoardData = [...cellData];
-        newBoardData.forEach((cell)=>cell.cellState = "hidden");
+        newBoardData.forEach((cell)=>cell.state = "hidden");
         setCellData(newBoardData);
         
         const newAvailableShips = [...shipPool]; 
@@ -208,7 +208,7 @@ const ShipSetupPage = () => {
                 cellData.forEach(cell => {
                     if (cell.unit && cell.unit.id === selectedPlacedShip.id) {
                         cell.unit = null;
-                        cell.cellState = "hidden";
+                        cell.state = "hidden";
                     }
                     setCellData(newCellData);
                 })
