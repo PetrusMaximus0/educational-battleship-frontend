@@ -104,6 +104,13 @@ const ShipSetupPage = () => {
         })
 
         setShipPool(newShipPool);
+
+        // Check if all ships were placed, and if they were set the game state to "ships placed".
+        const allShipsPlaced = newShipPool.findIndex((item)=> !item.placed);
+        if(allShipsPlaced===-1){//-1 means we couldn't find a ship that wasn't placed.
+            setGameSetupState("ships placed");
+        }
+        
     }
     
     const renderShipPlacementFeedback = (candidateShip: ShipData, cellIndex: number) =>{
@@ -296,14 +303,12 @@ const ShipSetupPage = () => {
         })
         
         joinSession();
-        
-        
+                
         // TODO: Temporarily used for testing. All data initialization will be moved to the BeginGameSetup event handler.
         const newShipPool = mockShipData.map((inShip)=>{
             return {ship: inShip, placed: false}
         })
         setShipPool([...newShipPool]);
-        setGameSetupState("placing ships");
         
         return ()=>{}
        
