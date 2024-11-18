@@ -4,7 +4,6 @@ import React, {useEffect, useState} from "react";
 import {invokeHubEvent, onHubEvent} from "../hubs/gameHub.tsx";
 import {CellData, ShipData, ShipOrientation} from "../types.tsx";
 import Board from "../components/Board.tsx";
-import {mockGameData, mockShipData} from "../mockGameData.ts";
 import Ship from "../components/Ship.tsx";
 import {isValidShipPlacement, rotateShip} from "../gameUtils/ShipPlacement.ts";
 
@@ -22,9 +21,9 @@ const ShipSetupPage = () => {
     const { id } = useParams();
 
     //
-    const [rowTags, setRowTags] = useState<string[]>([...mockGameData.rowTags]);
-    const [colTags, setColTags] = useState<string[]>([...mockGameData.colTags]);
-    const [cellData, setCellData] = useState<CellData[]>([...mockGameData.playerBoardData]);
+    const [rowTags, setRowTags] = useState<string[]>([]);
+    const [colTags, setColTags] = useState<string[]>([]);
+    const [cellData, setCellData] = useState<CellData[]>([]);
     const [shipPool, setShipPool] = useState<ShipPool>([]);
 
     //
@@ -274,9 +273,6 @@ const ShipSetupPage = () => {
     };
     
     useEffect(() => {        
-        // Set the css property for the row and col number
-        document.documentElement.style.setProperty("--columns", colTags.length.toString());
-        document.documentElement.style.setProperty("--rows", rowTags.length.toString());
         
         const joinSession = async () => {
             const {error: joinSessionError} = await invokeHubEvent("JoinExistingSession", id);
@@ -287,15 +283,19 @@ const ShipSetupPage = () => {
         }
         
         // TODO Not currently used!
-        onHubEvent("BeginGameSetup", (rowTags: string[], colTags: string[], boardData: CellData[], shipData: ShipData[]) => {
-            const newShipPool = shipData.map((inShip)=>{
+        onHubEvent("BeginGameSetup", (inRowTags: string[], inColTags: string[], inBoardData: CellData[], inShipData: ShipData[]) => {
+            const newShipPool = inShipData.map((inShip)=>{
                 return {ship: inShip, placed: false}
             })
-            setRowTags([...rowTags]);
-            setColTags([...colTags]);
-            setCellData(boardData);
+            setRowTags([...inRowTags]);
+            setColTags([...inColTags]);
+            setCellData(inBoardData);
             setShipPool(newShipPool);
             setGameSetupState("placing ships");
+
+            // Set the css property for the row and col number
+            document.documentElement.style.setProperty("--columns", inColTags.length.toString());
+            document.documentElement.style.setProperty("--rows", inRowTags.length.toString());
         })
         
         onHubEvent("Error", (message: string)=> {
@@ -303,15 +303,7 @@ const ShipSetupPage = () => {
         })
         
         joinSession();
-                
-        // TODO: Temporarily used for testing. All data initialization will be moved to the BeginGameSetup event handler.
-        const newShipPool = mockShipData.map((inShip)=>{
-            return {ship: inShip, placed: false}
-        })
-        setShipPool([...newShipPool]);
-        
-        return ()=>{}
-       
+               
     },[])
 
     useEffect(() => {
@@ -320,8 +312,6 @@ const ShipSetupPage = () => {
             document.removeEventListener("keydown", handleKeyDown);
         }
     }, [selectedShip, focusedCellIndex]);
-
-
     
     return (
         <div 
