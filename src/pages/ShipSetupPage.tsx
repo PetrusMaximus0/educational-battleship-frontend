@@ -51,11 +51,20 @@ const ShipSetupPage = () => {
         await invokeHubEvent("LeaveSession");
     }
 
-    const handleSetPlayerReady = () => {
+    const handleSetPlayerReady = async () => {
+        const ships : ShipData[] = shipPool.map((item)=>item.ship);
+
+        const {error} = await invokeHubEvent("ValidateFleetPlacement", id, ships);        
+                
+        if(error) {
+            setError(error);
+            console.log(error);
+            return;
+        }
         setGameSetupState("player ready")
     }
     
-     // place a ship given the coordinates and the ship data
+    // place a ship given the coordinates and the ship data
     const placeShip = (shipToPlace: ShipData, placementCoordinates: number[]) => {
         const newBoardData: CellData[] = [...cellData];
         const newShipPool: ShipPoolItem[] = [...shipPool];
@@ -74,6 +83,8 @@ const ShipSetupPage = () => {
             placementCoordinates[1] += shipToPlace.orientation[1];
         }
         
+        // Set state.
+        setShipPool(newShipPool);
         setCellData(newBoardData);
     }
 
