@@ -58,8 +58,16 @@ const ShipSetupPage = () => {
      // place a ship given the coordinates and the ship data
     const placeShip = (shipToPlace: ShipData, placementCoordinates: number[]) => {
         const newBoardData: CellData[] = [...cellData];
+        const newShipPool: ShipPoolItem[] = [...shipPool];
+
+        // Set the coordinates on the ship.
+        shipToPlace.pos.x = placementCoordinates[0];
+        shipToPlace.pos.y = placementCoordinates[1];
+        const idx = newShipPool.findIndex((item)=>item.ship.id === shipToPlace.id);
+        newShipPool[idx].ship = shipToPlace;
         
-        for(let i = 0; i < shipToPlace.size; i++){
+        // Mark the cell as occupied.
+        for(let i = 0; i < shipToPlace.numberOfSections; i++){
             newBoardData[placementCoordinates[0] + placementCoordinates[1]*colTags.length].state = "ship";
             newBoardData[placementCoordinates[0] + placementCoordinates[1]*colTags.length].unit = shipToPlace;
             placementCoordinates[0] += shipToPlace.orientation[0];
@@ -129,7 +137,7 @@ const ShipSetupPage = () => {
         const validPlacement = isValidShipPlacement(candidateShip, placementCoordinates, rowTags.length, colTags.length, newBoardData);
         
         if(validPlacement){
-            for(let i = 0; i < candidateShip.size; i++){
+            for(let i = 0; i < candidateShip.numberOfSections; i++){
                 newBoardData[placementCoordinates[0] + placementCoordinates[1]*colTags.length].state = "validPlacement";
                 placementCoordinates[0] += candidateShip.orientation[0];
                 placementCoordinates[1] += candidateShip.orientation[1];
@@ -148,7 +156,10 @@ const ShipSetupPage = () => {
         setCellData(newBoardData);
         
         const newAvailableShips = [...shipPool]; 
-        newAvailableShips.forEach((item)=>item.placed=false);        
+        newAvailableShips.forEach((item)=> {
+            item.placed = false;
+            item.ship.pos = {x:0,y:0};            
+        });        
         setShipPool(newAvailableShips);
         
         setGameSetupState("placing ships");
@@ -273,7 +284,6 @@ const ShipSetupPage = () => {
     };
     
     useEffect(() => {        
-        
         const joinSession = async () => {
             const {error: joinSessionError} = await invokeHubEvent("JoinExistingSession", id);
             if(joinSessionError) {

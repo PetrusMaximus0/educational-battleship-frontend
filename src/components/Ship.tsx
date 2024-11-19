@@ -11,7 +11,7 @@ type props = {
 const Ship = ({data, isPlaced, onMouseDown, onMouseUp} : props) => {
     const shipParts : any[] = [];
     const buildShip = () => {
-        for (let i = 0; i < data.size; i++) {
+        for (let i = 0; i < data.numberOfSections; i++) {
             shipParts.push(
                 <div key={`${data.id}_${i}`} className={`h-8 w-8`}></div>
             )

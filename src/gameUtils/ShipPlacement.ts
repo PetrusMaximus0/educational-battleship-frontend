@@ -66,7 +66,7 @@ const noNeighbors = (height: number, width: number, newCoords: number[], cellDat
 }
 
 const cellsFree  = (cellData:CellData[], height: number, width: number, placementCoordinates: number[], candidateShip: ShipData) => {
-    for (let i = 0; i < candidateShip.size; i += 1) {
+    for (let i = 0; i < candidateShip.numberOfSections; i += 1) {
         const newCoords = [
             placementCoordinates[0] + i * candidateShip.orientation[0],
             placementCoordinates[1] + i * candidateShip.orientation[1]
@@ -84,8 +84,8 @@ const cellsFree  = (cellData:CellData[], height: number, width: number, placemen
 export const isValidShipPlacement = (candidateShip: ShipData, placementCoordinates: number[], height: number, width: number, cellData: CellData[]) =>{
 
     // Check if the ship is within the board's bounds.
-    const XValid = inBounds(placementCoordinates[0], candidateShip.orientation[0], candidateShip.size, width);
-    const YValid = inBounds(placementCoordinates[1], candidateShip.orientation[1], candidateShip.size, height);
+    const XValid = inBounds(placementCoordinates[0], candidateShip.orientation[0], candidateShip.numberOfSections, width);
+    const YValid = inBounds(placementCoordinates[1], candidateShip.orientation[1], candidateShip.numberOfSections, height);
     if(!XValid || !YValid) {
         return false
     }

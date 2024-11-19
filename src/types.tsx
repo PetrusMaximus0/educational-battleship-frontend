@@ -42,9 +42,15 @@ export type IUpdateCellState = (cellIndex: number, newCellState: CellState) => v
 export type ShipType = "destroyer" | "submarine" | "carrier" | "frigate" | "battleship";
 export type ShipSize = 1 | 2 | 3 | 4 | 5;
 export type ShipOrientation = [1,0]|[-1,0]|[0,1]|[0,-1];
+export type SectionStatus = "ok" | "hit";
 export type ShipData = {
     id: string,
     type: ShipType;
-    size: ShipSize;
+    pos: {
+        x: number,
+        y: number,
+    }
     orientation: ShipOrientation;
+    numberOfSections: ShipSize;
+    sectionStatus: SectionStatus[];
 }
