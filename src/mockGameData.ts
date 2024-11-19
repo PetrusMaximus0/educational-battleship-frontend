@@ -1,14 +1,13 @@
 
 // Placeholder tags
-import {CellData, CellTag, GameData, ShipData} from "./types.tsx";
-
+import {CellData, CellTag, GameData} from "./types.tsx";
 
 // Placeholder tags
 const inColTags: CellTag[] = ["I", "You", "He", "She", "It", "We", "They"];
 const inRowTags: CellTag[] = ["A cat", "A dog", "A parrot", "A tiger", "A mouse", "A turtle", "A bird" ];
 
 // Placeholder function to generate board.
-const getBoardData = () => {
+const generateEmptyBoard = () => {
     // Construct temporary board data to render the cells.
     const tempBoardData : CellData[] = [];
     for (let i = 0; i < inRowTags.length * inColTags.length; i++) {
@@ -25,48 +24,11 @@ const getBoardData = () => {
     }
     return tempBoardData;
 }
-
-export const mockShipData : ShipData[] = [
-    {
-        id: "ship-1",
-        type: "destroyer", // define the types !
-        size: 2, // 1 to 5
-        orientation: [1,0], // 0 to 3 -> clockwise North to West
-    },{
-        id: "ship-2",    
-        type: "battleship", // define the types !
-        size: 4, // 1 to 5
-        orientation: [1,0], // 0 to 3 -> clockwise North to West
-    },{
-        id:"ship-3",
-        type: "submarine", // define the types !
-        size: 3, // 1 to 5
-        orientation: [1,0], // 0 to 3 -> clockwise North to West
-    },{
-        id: "ship-4",
-        type: "carrier", // define the types !
-        size: 5, // 1 to 5
-        orientation: [1,0], // 0 to 3 -> clockwise North to West
-    },
-    {
-        id: "ship-5",
-        type: "frigate", // define the types !
-        size: 3, // 1 to 5
-        orientation: [1,0], // 0 to 3 -> clockwise North to West
-    },
-    {
-        id: "ship-6",
-        type: "destroyer", // define the types !
-        size: 2, // 1 to 5
-        orientation: [1,0], // 0 to 3 -> clockwise North to West
-    }
-]
-
 export const mockGameData : GameData = {
     gameId: "id",
     rowTags: inRowTags,
     colTags: inColTags,
-    playerBoardData: getBoardData(),
-    opponentBoardData: getBoardData(),
+    playerBoardData: generateEmptyBoard(),
+    opponentBoardData: generateEmptyBoard(),
     playerTurn: false,
 }
