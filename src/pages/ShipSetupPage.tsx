@@ -1,4 +1,4 @@
-import {Link, useParams} from "react-router-dom";
+import {Link, useNavigate, useParams} from "react-router-dom";
 import Footer from "../components/Footer.tsx";
 import React, {useEffect, useState} from "react";
 import {invokeHubEvent, onHubEvent} from "../hubs/gameHub.tsx";
@@ -7,7 +7,7 @@ import Board from "../components/Board.tsx";
 import Ship from "../components/Ship.tsx";
 import {isValidShipPlacement, rotateShip} from "../gameUtils/ShipPlacement.ts";
 
-type SetupState = "waiting for players" | "placing ships" | "ships placed" | "player ready";
+type SetupState = "waiting for players" | "placing ships" | "ships placed" | "player ready" | "placement validated";
 type ShipPoolItem = {ship: ShipData, placed: boolean};
 type ShipPool =  ShipPoolItem[];
 
@@ -31,6 +31,9 @@ const ShipSetupPage = () => {
     const [shipBrushPos, setShipBrushPos] = useState<{x: number; y: number}>({x:0,y:0});
     const [focusedCellIndex, setFocusedCellIndex] = useState<number>(-1);
 
+    // 
+    const navigate = useNavigate();
+    
     // Handlers for session connectivity and game setup state.
     let timerHandler = 0;
     const handleCopyId = async () => {
@@ -127,8 +130,7 @@ const ShipSetupPage = () => {
         const allShipsPlaced = newShipPool.findIndex((item)=> !item.placed);
         if(allShipsPlaced===-1){//-1 means we couldn't find a ship that wasn't placed.
             setGameSetupState("ships placed");
-        }
-        
+        }        
     }
     
     const renderShipPlacementFeedback = (candidateShip: ShipData, cellIndex: number) =>{
@@ -303,7 +305,16 @@ const ShipSetupPage = () => {
             }            
         }
         
-        // TODO Not currently used!
+        // Register hub events.
+        onHubEvent("StartGame", ()=>{
+            console.log("Starting game...")
+            navigate(`/game/join/${id}`)            
+        })
+        
+        onHubEvent("ShipPlacementResult", (result: boolean)=>{
+            if(result) setGameSetupState("waiting for players");
+        })
+                
         onHubEvent("BeginGameSetup", (inRowTags: string[], inColTags: string[], inBoardData: CellData[], inShipData: ShipData[]) => {
             const newShipPool = inShipData.map((inShip)=>{
                 return {ship: inShip, placed: false}
@@ -417,6 +428,10 @@ const ShipSetupPage = () => {
                                 || gameSetupState==="player ready" &&
                                 <h2 className={"flex justify-center gap-2 items-center h-full text-4xl"}>
                                     Waiting for the other player...
+                                </h2>
+                                || gameSetupState==="placement validated" &&
+                                <h2 className={"flex justify-center gap-2 items-center h-full text-4xl"}>
+                                    Validating Fleet Positioning...
                                 </h2>
                             }
                         </div>
