@@ -221,11 +221,8 @@ const GamePage = ({}: Props) => {
                    error &&
                     <section className='flex flex-col gap-4 justify-center items-center'>                        
                         <h2 className={"text-4xl"}> 
-                            The game couldn't be started.
+                            <span className={"font-bold"}> Error: </span> {error.message} 
                         </h2>
-                        <p>                            
-                            <span className={"font-bold"}> Reason: </span> {error.message} 
-                        </p> 
                     </section>
                     || gameState === "active" &&
                     <section className={"text-center"}>
