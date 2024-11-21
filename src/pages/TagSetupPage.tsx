@@ -41,7 +41,7 @@ const TagSetupPage = () => {
            
             // Register to accept session ID.
             onHubEvent("ReceiveSessionId", (id: string)=> {
-                navigate(`/game/ship-setup/${id}`);
+                navigate(`/game/${id}`);
             })           
             
             // Request a new session
