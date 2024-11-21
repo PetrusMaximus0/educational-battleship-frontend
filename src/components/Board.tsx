@@ -17,7 +17,7 @@ type Props = {
 
 const Board = ({boardTitle, rowTags, colTags, cellData, onMouseEnterCell, onFireAtCell, onClickCell, onMouseUpCell, onMouseDownCell}: Props) => {
     return (
-        <div className='grid grid-rows-[auto_auto_1fr] grid-cols-[auto_1fr] w-fit rounded-md text-xs bg-BgA'>
+        <section className='grid grid-rows-[auto_auto_1fr] grid-cols-[auto_1fr] w-fit rounded-md text-xs bg-BgA'>
             <h2 className="py-3.5 justify-self-center row-start-1 text-3xl col-span-2">
                 {boardTitle}
             </h2>
@@ -53,7 +53,7 @@ const Board = ({boardTitle, rowTags, colTags, cellData, onMouseEnterCell, onFire
                     />
                     )}
             </div>
-        </div>
+        </section>
     )
 }
 

@@ -15,7 +15,7 @@ const ClientConnectRedirect = () => {
             return;
         }
         
-        navigate(`/game/ship-setup/${id}`);
+        navigate(`/game/${id}`);
     }
     useEffect(() => {
         (async ()=>{
