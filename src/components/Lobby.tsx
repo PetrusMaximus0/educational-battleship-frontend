@@ -45,7 +45,6 @@ const Lobby = ({validId} : props)=> {
     return (
         validId && 
         <section className={"text-center"}>
-            <h2 className={"mb-4 text-xl"}> Waiting for player to join... </h2>
             <div className={"text-center"}>
                 <h2 className={"mb-4 text-xl"}> Your session ID: </h2>
                 <div className={"flex gap-2 justify-center items-center"}>
