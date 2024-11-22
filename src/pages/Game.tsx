@@ -143,7 +143,7 @@ const Game = ()=>{
                             </ul>
                         </nav>
                     </header>
-                    <div className={"flex gap-2 w-fit items-center mx-auto my-4"}>
+                    <div className={"hidden gap-2 w-fit items-center mx-auto my-4"}>
                         Debug Game State   
                         <button className={"px-2 py-1 border"} onClick={()=>setGameState(EGameState.Lobby)}> Lobby </button>
                         <button className={"px-2 py-1 border"} onClick={()=> {
@@ -153,7 +153,7 @@ const Game = ()=>{
                         <button className={"px-2 py-1 border"} onClick={()=>setGameState(EGameState.GameOnGoing)}> Ongoing </button>
                         <button className={"px-2 py-1 border"} onClick={()=>setGameState(EGameState.GameOver)}> Game Over </button>
                     </div>
-                    <div className={"flex gap-2 w-fit items-center mx-auto"}>
+                    <div className={"hidden gap-2 w-fit items-center mx-auto"}>
                         Client State
                         {
                             gameState === EGameState.FleetSetup && 
