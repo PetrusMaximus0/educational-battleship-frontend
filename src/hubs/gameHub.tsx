@@ -31,7 +31,7 @@ const joinHub : JoinHubResp  = async () => {
             // Create a new connection
             connectionInstance =
                 new HubConnectionBuilder()
-                    .withUrl("http://localhost:5154/battlespeak")
+                    .withUrl("http://192.168.0.220:5154/battlespeak")
                     .configureLogging(LogLevel.Information)
                     .build();
             
