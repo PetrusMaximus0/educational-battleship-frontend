@@ -50,11 +50,14 @@ const GameBoards = ({playerState} : props) => {
         console.log(index);
     }
 
-    const handleFireAtCell = (index: number) => {
+    const handleFireAtCell = async (index: number) => {
         if(playerState !== EClientState.OnTurn) return;
 
         // send cell shot to server and receive new cell state.
-        alert(`Fired! at index: ${index} `);
+        const {error: hubError} = await invokeHubEvent("FireAtCell", id, index);        
+        if(hubError){
+            setError(hubError);
+        }        
     }     
     
     // Register hub event handlers.
@@ -64,6 +67,10 @@ const GameBoards = ({playerState} : props) => {
             setOpponentBoardData(opponentBoardData);
             setRowTags(rowTags);
             setColTags(colTags);
+
+            // Set the css property for the row and col number
+            document.documentElement.style.setProperty("--columns", colTags.length.toString());
+            document.documentElement.style.setProperty("--rows", rowTags.length.toString());
         }
         
         const handleUpdateGameBoards = (playerBoard: CellData[], opponentBoard : CellData[]) => {
@@ -71,11 +78,8 @@ const GameBoards = ({playerState} : props) => {
             setOpponentBoardData(opponentBoard);
         }
 
-        onHubEvent("GameBoardsInit", handleGameBoardsInit)
-        onHubEvent("UpdateBoards", handleUpdateGameBoards)   
-        
-        // FOR DEBUGGING
-        handleGameBoardsInit(mockGameData.rowTags, mockGameData.colTags, mockStartGameData.playerBoardData, mockStartGameData.opponentBoardData)        
+        onHubEvent("GameBoardsInit", handleGameBoardsInit);
+        onHubEvent("UpdateBoards", handleUpdateGameBoards);       
     },[])
     
     // Initialize the boards at game start.

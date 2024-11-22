@@ -5,7 +5,6 @@ import {CellData, ShipData, ShipOrientation} from "../types.tsx";
 import {invokeHubEvent, onHubEvent} from "../hubs/gameHub.tsx";
 import {isValidShipPlacement, rotateShip} from "../gameUtils/ShipPlacement.ts";
 import {useParams} from "react-router-dom";
-import {mockGameData, mockShipData} from "../mockGameData.ts";
 import {EClientState} from "../pages/Game.tsx";
 
 type ShipPoolItem = {ship: ShipData, placed: boolean};
@@ -280,7 +279,6 @@ const ShipSetup = ({clientState}: props) => {
         if(hubError){
             setError(hubError);
             setSetupState(EFleetSetupState.placed);
-            alert("There was an error")
         }
     }
     
@@ -295,11 +293,9 @@ const ShipSetup = ({clientState}: props) => {
     useEffect(() => {
         const handleBeginFleetSetup = (inRowTags: string[], inColTags: string[], inBoardData: CellData[], inShipData: ShipData[]) => {
             const newShipPool = inShipData.map((inShip)=>{
-                console.log("ship: ", inShip);
                 return {ship: inShip, placed: false}
             })
             
-            console.log("ship pool ", newShipPool);
             setRowTags([...inRowTags]);
             setColTags([...inColTags]);
             setCellData([...inBoardData]);
@@ -319,18 +315,11 @@ const ShipSetup = ({clientState}: props) => {
         onHubEvent("Error", handleHubError);
         
         //
-        //invokeHubEvent("FleetSetup", id);
-        handleBeginFleetSetup(mockGameData.rowTags, mockGameData.colTags, mockGameData.opponentBoardData, mockShipData)
-        
+        (async ()=>{
+            await invokeHubEvent("FleetSetup", id);
+        })()        
     },[])
 
-    // For debug
-    useEffect(()=>{
-        //
-        console.log(rowTags,colTags,cellData, shipPool);
-
-    },[rowTags, colTags, cellData, shipPool])
-    
     useEffect(() => {
         document.addEventListener("keydown", handleKeyDown);
         return () => {
