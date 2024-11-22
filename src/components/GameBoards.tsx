@@ -1,8 +1,8 @@
 import Board from "./Board.tsx";
 import {useEffect, useState} from "react";
-import {CellData, CellTag} from "../types.tsx";
+import {CellData} from "../common/types.tsx";
 import {useParams} from "react-router-dom";
-import {EClientState} from "../pages/Game.tsx";
+import {EClientState} from "../common/Enums.ts";
 import {invokeHubEvent, onHubEvent} from "../hubs/gameHub.tsx";
 
 type props = {
@@ -11,13 +11,15 @@ type props = {
 
 const GameBoards = ({playerState} : props) => {
     //
+    const [rowTags, setRowTags] = useState<string[]>([]);
+    const [colTags, setColTags] = useState<string[]>([]);
     const [playerBoardData, setPlayerBoardData] = useState<CellData[]>([]);
     const [opponentBoardData, setOpponentBoardData] = useState<CellData[]>([]);
+    //    
     const [selectedCell, setSelectedCell] = useState<number>(-1);
-    const [rowTags, setRowTags] = useState<CellTag[]>([]);
-    const [colTags, setColTags] = useState<CellTag[]>([]);
+    //
     const {id} = useParams();
-    
+        
     // Handle clicking a cell on the opponents board.
     const handleClickOpponentBoardCell = (index: number) => {
         const newBoardData = [...opponentBoardData];
@@ -48,7 +50,6 @@ const GameBoards = ({playerState} : props) => {
     const handleClickPlayerBoardCell = (index: number) => {
         console.log(index);
     }
-
     const handleFireAtCell = async (index: number) => {
         if(playerState !== EClientState.OnTurn) return;
 
@@ -58,7 +59,7 @@ const GameBoards = ({playerState} : props) => {
             setError(hubError);
         }        
     }     
-    
+
     // Register hub event handlers.
     useEffect(()=>{
         const handleGameBoardsInit = (rowTags: string[], colTags: string[], playerBoardData: CellData[], opponentBoardData: CellData[]) => {
@@ -78,9 +79,9 @@ const GameBoards = ({playerState} : props) => {
         }
 
         onHubEvent("GameBoardsInit", handleGameBoardsInit);
-        onHubEvent("UpdateBoards", handleUpdateGameBoards);       
+        onHubEvent("UpdateBoards", handleUpdateGameBoards);
     },[])
-    
+
     // Initialize the boards at game start.
     useEffect(()=>{
         (async ()=>{
