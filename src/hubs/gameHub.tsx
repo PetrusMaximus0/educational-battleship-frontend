@@ -95,13 +95,13 @@ const getHubConnectionState = () =>{
 const invokeHubEvent = async (eventName: string, ...eventArgs: any[]) => {
     try {
         if(!connectionInstance) {
-            throw new Error("Connection Instance is null");
+            throw new Error(`Error when calling event ${eventName}. The connection instance is NULL.`);
         }
         if(connectionInstance.state === "Connected") {
             await connectionInstance.invoke(eventName, ...eventArgs);
             return {error: null};
         }else{
-            throw new Error(`Connection state is: ${connectionInstance.state}`);
+            throw new Error(`Error invoking event ${eventName}. The connection state is: ${connectionInstance.state}`);
         }
     }catch (error) {
         // return the error as Error type.
