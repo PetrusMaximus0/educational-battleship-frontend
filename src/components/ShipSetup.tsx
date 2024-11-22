@@ -1,14 +1,11 @@
 import Ship from "./Ship.tsx";
 import Board from "./Board.tsx";
 import React, {useEffect, useState} from "react";
-import {CellData, ShipData, ShipOrientation} from "../common/types.tsx";
+import {CellData, ShipData, ShipOrientation, ShipPool, ShipPoolItem} from "../common/types.tsx";
 import {invokeHubEvent, onHubEvent} from "../hubs/gameHub.tsx";
 import {isValidShipPlacement, rotateShip} from "../gameUtils/ShipPlacement.ts";
 import {useParams} from "react-router-dom";
 import {EClientState, EFleetSetupState} from "../common/Enums.ts";
-
-type ShipPoolItem = {ship: ShipData, placed: boolean};
-type ShipPool =  ShipPoolItem[];
 
 type props ={
     clientState : EClientState | null,

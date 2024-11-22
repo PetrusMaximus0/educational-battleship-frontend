@@ -1,5 +1,5 @@
+// Todo: Convert CellState type with an enum.
 export type CellState = "hidden" | "hit" | "ship" | "miss" | "sunk" | "validPlacement" | "invalidPlacement";
-
 export type CellData = {
     index: number,
     pos: {
@@ -11,18 +11,7 @@ export type CellData = {
     selected?: boolean,
 }
 
-export type CellStateColors = {
-    hidden: string,
-    miss: string,
-    hit: string,
-    ship: string,
-    sunk: string,
-    validPlacement: string,
-    invalidPlacement: string,
-}
-
-export type CellTag = string;
-
+// Game
 export interface GameData {
     rowTags: string[],
     colTags: string[],
@@ -32,13 +21,8 @@ export interface GameData {
     playerTurn: boolean,
 }
 
-export type ErrorValue<E, V> = {value: V, error: null} | {value: null, error: E};
-
-export type IInitializeBoard = (inColTags: CellTag[], inRowTags: CellTag[], inCellData: CellData[]) => void;
-
-export type IUpdateCellState = (cellIndex: number, newCellState: CellState) => void;
-
-//
+// Ships
+// Todo: replace the ShipType type with an enum.
 export type ShipType = "destroyer" | "submarine" | "carrier" | "frigate" | "battleship";
 export type ShipSize = 1 | 2 | 3 | 4 | 5;
 export type ShipOrientation = [1,0]|[-1,0]|[0,1]|[0,-1];
@@ -54,3 +38,5 @@ export type ShipData = {
     numberOfSections: ShipSize;
     sectionStatus: SectionStatus[];
 }
+export type ShipPoolItem = {ship: ShipData, placed: boolean};
+export type ShipPool =  ShipPoolItem[];
