@@ -18,7 +18,7 @@ enum EFleetSetupState {
 }
 
 type props ={
-    clientState : EClientState,
+    clientState : EClientState | null,
 }
 
 const ShipSetup = ({clientState}: props) => {

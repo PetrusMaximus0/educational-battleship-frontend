@@ -7,10 +7,6 @@ import {closeHub, getHubConnectionState, invokeHubEvent, joinHub, onHubClose, on
 import GameBoards from "../components/GameBoards.tsx";
 
 export enum EClientState {
-    // In any Game state
-    Disconnected,
-    NotInSession,
-    JoinedSession,
     // In Fleet Setup game state
     FleetSetup,
     FleetReady,
@@ -38,7 +34,7 @@ const SessionMessage = ({message}: { message: string }) => {
 
 const Game = ()=>{
     // State
-    const [clientState, setClientState] = useState<EClientState>(EClientState.NotInSession);
+    const [clientState, setClientState] = useState<EClientState|null>(null);
     const [gameState, setGameState] = useState<EGameState>(EGameState.Lobby);
     
     //
@@ -67,7 +63,7 @@ const Game = ()=>{
         // Handle disconnects and reconnects.
         onHubClose(false, ()=> {
             setSessionError(new Error("Lost connection to hub!"))
-            setClientState(EClientState.Disconnected);
+            setClientState(null);
         })
 
         // Receive client state update.
@@ -178,7 +174,7 @@ const Game = ()=>{
                         <h2> 
                         {
                             sessionError && <SessionError error={sessionError!}/>
-                            || (clientState == EClientState.Disconnected) && <SessionMessage message={"Attempting to connect to server..."}/>
+                            || (clientState == null) && <SessionMessage message={"Attempting to connect to server..."}/>
                             || <SessionMessage message={serverMessage}/>
                         }
                         </h2>

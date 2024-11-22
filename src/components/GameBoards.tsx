@@ -4,10 +4,9 @@ import {CellData, CellTag} from "../types.tsx";
 import {useParams} from "react-router-dom";
 import {EClientState} from "../pages/Game.tsx";
 import {invokeHubEvent, onHubEvent} from "../hubs/gameHub.tsx";
-import {mockGameData, mockStartGameData} from "../mockGameData.ts";
 
 type props = {
-    playerState : EClientState,
+    playerState : EClientState | null,
 }
 
 const GameBoards = ({playerState} : props) => {
