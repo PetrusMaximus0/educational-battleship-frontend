@@ -1,6 +1,6 @@
 import {Link, useNavigate} from "react-router-dom";
 import Footer from "../components/Footer.tsx";
-import {mockGameData} from "../mockGameData.ts";
+import {mockGameData} from "../gameUtils/mockGameData.ts";
 import {useEffect, useState} from "react";
 import TagColumn from "../components/TagColumn.tsx";
 import {invokeHubEvent, joinHub, onHubEvent} from "../hubs/gameHub.tsx";

@@ -1,10 +1,8 @@
+import {CellData, CellState, GameData, ShipData} from "../common/types.tsx";
 
 // Placeholder tags
-import {CellData, CellState, CellTag, GameData, ShipData} from "./types.tsx";
-
-// Placeholder tags
-const inColTags: CellTag[] = ["I", "You", "He", "She", "It", "We", "They"];
-const inRowTags: CellTag[] = ["A cat", "A dog", "A parrot", "A tiger", "A mouse", "A turtle", "A bird" ];
+const inColTags: string[] = ["I", "You", "He", "She", "It", "We", "They"];
+const inRowTags: string[] = ["A cat", "A dog", "A parrot", "A tiger", "A mouse", "A turtle", "A bird" ];
 
 // Placeholder function to generate board.
 const generateEmptyBoard = (defaultState?: CellState ) => {
@@ -67,7 +65,6 @@ export const mockShipData: ShipData[] = [
         sectionStatus: ["ok", "ok"],
     },    
 ]
-
 const getBoardWithShips = () => {
     const board = generateEmptyBoard("miss");
     mockShipData.forEach((ship)=> {
@@ -81,7 +78,6 @@ const getBoardWithShips = () => {
     })
     return board;
 }
-
 export const mockStartGameData : GameData = {
     gameId: "id",
     rowTags: inRowTags,
