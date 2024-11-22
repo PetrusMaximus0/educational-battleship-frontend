@@ -10,6 +10,7 @@ type props = {
 }
 
 const GameBoards = ({playerState} : props) => {
+    const [error, setError] = useState<Error | null>(null);    
     //
     const [rowTags, setRowTags] = useState<string[]>([]);
     const [colTags, setColTags] = useState<string[]>([]);
@@ -85,22 +86,17 @@ const GameBoards = ({playerState} : props) => {
     // Initialize the boards at game start.
     useEffect(()=>{
         (async ()=>{
-            const { error: hubError } = await invokeHubEvent("RequestBoardsInit", id);
-            if(hubError){
-                alert(`${hubError.message}`);
-            }
+            const { error: hubError } = await invokeHubEvent("BeginGame", id);
+            if(hubError) setError(hubError);
         })()        
     },[])
-        
-    useEffect(()=>{
-        
-    },[playerState])
-    
+
     return (
         <section className={"text-center"}>
             <h2 className={"text-4xl py-4 my-4 bg-BgA"}> 
                 {
-                    playerState===EClientState.OnTurn && "Your turn!" 
+                    error && <span className={"text-red-600"}> {error.message} </span>
+                    || playerState===EClientState.OnTurn && "Your turn!" 
                     || playerState===EClientState.WaitingForTurn && "Opponent's Turn!"
                     || "Starting Game"
                 }
