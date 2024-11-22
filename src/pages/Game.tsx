@@ -66,22 +66,21 @@ const Game = ()=>{
 
         // Handle disconnects and reconnects.
         onHubClose(false, ()=> {
-            alert("Lost connection to hub!");
             setSessionError(new Error("Lost connection to hub!"))
             setClientState(EClientState.Disconnected);
         })
 
         // Receive client state update.
-        onHubEvent("ClientStateUpdate", (state: number, serverMessage)=>{
+        onHubEvent("ClientStateUpdate", (state: number, message: string)=>{
             setClientState(state as EClientState);
-            setServerMessage(serverMessage);
+            if(message) setServerMessage(message);
             console.log("Client State: ",state); // Need to test this out.
         })
 
         // Receive game state update. Both clients should receive this at the same time.
-        onHubEvent("GameStateUpdate", (state: number, serverMessage)=>{
+        onHubEvent("GameStateUpdate", (state: number, message: string)=>{
             setGameState(state as EGameState);
-            setServerMessage(serverMessage);
+            if(message) setServerMessage(message);
             console.log("game state: ", state); // Need to test this out.
         })
         
