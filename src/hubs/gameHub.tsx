@@ -1,11 +1,13 @@
 import {HubConnection, HubConnectionBuilder, LogLevel} from "@microsoft/signalr";
 
-export type JoinHubResp = () => Promise<{connection: HubConnection, error: null} | {connection: null, error: Error} >;
-export type GameHubConnection = HubConnection;
+// Types
+type JoinHubResp = () => Promise<{connection: HubConnection, error: null} | {connection: null, error: Error} >;
+type OnHubEventHandler = (...args: any) => void;
 
 // Singleton Connection Instance
 let connectionInstance : HubConnection | null = null;
 
+/** Stops the connection and sets connection instance to null */
 const stopConnection = async () => {
     if(connectionInstance) {
         try {
@@ -16,7 +18,6 @@ const stopConnection = async () => {
         }
     }
 }
-
 /** Starts a connection to the server. 
  * Handles errors and returns an object of type {conn: HubConnection | null, error: Error | null}
  * where at least one of the elements is not null. 
@@ -25,7 +26,6 @@ const joinHub : JoinHubResp  = async () => {
     if(connectionInstance && connectionInstance.state === "Connected") {
         return {connection: connectionInstance, error : null};
     }
-    
     try{
         if(!connectionInstance) {
             // Create a new connection
@@ -52,7 +52,7 @@ const joinHub : JoinHubResp  = async () => {
         return {connection: null, error: returnedErr};
     }
 }
-
+/** Handle client request to close the hub. */
 const closeHub = async () => {
     if(!connectionInstance) {
         console.log("conn is null when trying to close hub");
@@ -69,9 +69,7 @@ const closeHub = async () => {
         connectionInstance = null;
     }
 }
-
-/** Handle the Hub connection close event*/
-type OnHubEventHandler = (...args: any)=>void;
+/** Bind handler to the Hub connection close event*/
 const onHubClose = (retry : boolean = true, handleOnClose?: OnHubEventHandler, ...handlerArgs: any[]) => {
     // Return and do nothing if the connection is not valid.
     if(!connectionInstance) return;
@@ -81,35 +79,34 @@ const onHubClose = (retry : boolean = true, handleOnClose?: OnHubEventHandler, .
         if(retry && connectionInstance) await connectionInstance.start();
     })        
 } 
-
 /** Binds events based on a connection */
 const onHubEvent = (eventName: string, callback: OnHubEventHandler) =>{
     if(!connectionInstance) return;
     connectionInstance.on(eventName, callback);    
 }
-
+/***/
 const getHubConnectionState = () =>{
     return connectionInstance ? connectionInstance.state : null;
 }
-
+/***/
 const invokeHubEvent = async (eventName: string, ...eventArgs: any[]) => {
     try {
         if(!connectionInstance) {
-            throw new Error(`Error when calling event ${eventName}. The connection instance is NULL.`);
+            return {error: new Error(`Error when calling event ${eventName}. The connection instance is NULL.`)};
         }
-        if(connectionInstance.state === "Connected") {
-            await connectionInstance.invoke(eventName, ...eventArgs);
-            return {error: null};
-        }else{
-            throw new Error(`Error invoking event ${eventName}. The connection state is: ${connectionInstance.state}`);
+        
+        if(connectionInstance.state !== "Connected") {
+            return {error: new Error(`Error invoking event ${eventName}. The connection state is: ${connectionInstance.state}`)};
         }
+        
+        await connectionInstance.invoke(eventName, ...eventArgs);
+        return {error: null};
+
     }catch (error) {
         // return the error as Error type.
         const returnedErr = error instanceof Error ? error : new Error(`${error}`);
         return {error: returnedErr};
     }
 }
-
+/***/
 export {invokeHubEvent, onHubEvent, onHubClose, closeHub, joinHub, getHubConnectionState}
-
-
