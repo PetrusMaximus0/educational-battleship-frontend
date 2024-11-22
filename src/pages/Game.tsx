@@ -3,7 +3,7 @@ import Footer from "../components/Footer.tsx";
 import {Link, useParams} from "react-router-dom";
 import Lobby from "../components/Lobby.tsx";
 import ShipSetup from "../components/ShipSetup.tsx";
-import {closeHub, invokeHubEvent, joinHub, onHubClose, onHubEvent} from "../hubs/gameHub.tsx";
+import {closeHub, getHubConnectionState, invokeHubEvent, joinHub, onHubClose, onHubEvent} from "../hubs/gameHub.tsx";
 import GameBoards from "../components/GameBoards.tsx";
 
 export enum EClientState {
@@ -95,6 +95,10 @@ const Game = ()=>{
     // Joining the session and reconnecting.
     useEffect(()=>{
         const joinSession = async () => {
+            if(getHubConnectionState()!=="Connected") {
+                setServerMessage(getHubConnectionState() as string);
+                return;
+            }
             const {error: joinSessionError} = await invokeHubEvent("JoinSession", id);
             if(joinSessionError) {
                 setSessionError(joinSessionError);
