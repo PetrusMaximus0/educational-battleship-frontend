@@ -30,29 +30,30 @@ const TagSetupPage = () => {
         }
     }
     const handleSubmitTags = async () => {
-        if(rowTags.length>0 && colTags.length>0){
-            setError(null); 
-            // Connect to the HUB.
-            const {error: err} = await joinHub()
-            if(err){
-                setError(err);
-                return;
-            }
-           
-            // Register to accept session ID.
-            onHubEvent("ReceiveSessionId", (id: string)=> {
-                navigate(`/game/${id}`);
-            })           
-            
-            // Request a new session
-            const {error: invokeError} = await invokeHubEvent("RequestNewSession", rowTags, colTags);
-            if(invokeError){
-                setError(invokeError);
-            }
-            
-        }else{
+        if (rowTags.length <= 0 || colTags.length <= 0) {
             setError(new Error("There must be at least one Row tag and one Column tag"))
+            return;
+        } 
+
+        setError(null);
+        // Connect to the HUB.
+        const {error: err} = await joinHub()
+        if (err) {
+            setError(err);
+            return;
         }
+
+        // Register to accept session ID.
+        onHubEvent("ReceiveSessionId", (id: string) => {
+            navigate(`/game/${id}`);
+        })
+
+        // Request a new session
+        const {error: invokeError} = await invokeHubEvent("RequestNewSession", rowTags, colTags);
+        if (invokeError) {
+            setError(invokeError);
+        }
+
     }
     
     useEffect(()=>{
