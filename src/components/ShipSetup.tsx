@@ -161,8 +161,6 @@ const ShipSetup = ({clientState}: props) => {
         if(placedShipIndex!==-1){
             // Set the ship as placed.
             newAvailableShips[placedShipIndex].placed = true;
-        }else{
-            alert("Couldn't set ship as placed!");
         }
 
         // Check if all ships were placed, and if they were set the game state to "ships placed".
@@ -202,8 +200,6 @@ const ShipSetup = ({clientState}: props) => {
                 const candidateShipIndex = newAvailableShips.findIndex((item)=>item.ship.id === selectedPlacedShip.id)
                 if(candidateShipIndex!==-1){
                     newAvailableShips[candidateShipIndex].placed = false;
-                }else{
-                    alert("Couldn't mark the ship as not placed.")
                 }
 
                 setShipPool(newAvailableShips);

@@ -30,3 +30,11 @@ export enum ECellState {
     validPlacement= "validPlacement",
     invalidPlacement= "invalidPlacement",    
 }
+
+export enum EShipType{
+    destroyer,
+    submarine,
+    carrier,
+    frigate,
+    battleship,
+}

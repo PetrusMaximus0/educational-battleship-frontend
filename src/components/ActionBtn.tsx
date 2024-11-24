@@ -1,3 +1,5 @@
+import React from "react";
+
 type Props = {
     clickHandler: () => void;
     children: React.ReactNode;  

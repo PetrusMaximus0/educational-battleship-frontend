@@ -1,5 +1,5 @@
 import {CellData, GameData, ShipData} from "../common/types.tsx";
-import {ECellState} from "../common/Enums.ts";
+import {ECellState, EShipType} from "../common/Enums.ts";
 
 // Placeholder tags
 const inColTags: string[] = ["I", "You", "He", "She", "It", "We", "They"];
@@ -40,7 +40,7 @@ export const mockShipData: ShipData[] = [
         },
         numberOfSections: 2,
         orientation : [0, 1],
-        type : "destroyer",
+        type : EShipType.destroyer,
         sectionStatus: ["ok", "ok"],
     },
     {
@@ -51,7 +51,7 @@ export const mockShipData: ShipData[] = [
         },
         numberOfSections: 2,
         orientation : [1, 0],
-        type : "destroyer",
+        type : EShipType.destroyer,
         sectionStatus: ["ok", "ok"],
     },
     {
@@ -62,7 +62,7 @@ export const mockShipData: ShipData[] = [
         },
         numberOfSections: 2,
         orientation : [0, 1],
-        type : "destroyer",
+        type : EShipType.destroyer,
         sectionStatus: ["ok", "ok"],
     },    
 ]
