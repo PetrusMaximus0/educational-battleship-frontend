@@ -1,4 +1,4 @@
-import {CellData, ShipData} from "../types.tsx";
+import {CellData, ShipData} from "../common/types";
 
 const inBounds = (coord: number, ort: number, len: number, boardDim: number) => {
     return coord >= 0

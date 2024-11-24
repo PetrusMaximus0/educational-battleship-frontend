@@ -1,12 +1,12 @@
-// Todo: Convert CellState type with an enum.
-export type CellState = "hidden" | "hit" | "ship" | "miss" | "sunk" | "validPlacement" | "invalidPlacement";
+import {ECellState} from "./Enums.ts";
+
 export type CellData = {
     index: number,
     pos: {
         x: number,
         y: number,
     }
-    state: CellState,
+    state: ECellState,
     unit?: ShipData | null,
     selected?: boolean,
 }

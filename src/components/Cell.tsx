@@ -1,8 +1,9 @@
 import Icon from "@mdi/react";
 import {mdiBullseye, mdiEraser, mdiFlagVariant} from "@mdi/js";
-import {CellData, CellStateColors} from '../types'
+import {CellData} from '../common/types.tsx'
 import ActionBtn from "./ActionBtn.tsx";
 import React, { useState } from "react";
+import {ECellState} from "../common/Enums.ts";
 
 type Props = {
     data: CellData,
@@ -13,11 +14,12 @@ type Props = {
     onMouseDown?: (index:number) => void
     classes?: string,
 }
+
 const Cell = ({onClickCell, onCellFire, data, onMouseEnter, onMouseUp, onMouseDown, classes = ""}: Props) => {
     const [flagged, setFlagged] = useState<boolean>(false);
 
     const handleMarkCell = () => {
-        if (data.state === "hidden" || data.state === "miss") {
+        if (data.state === ECellState.hidden || data.state === ECellState.miss) {
             setFlagged(true);
         }
     }
@@ -45,7 +47,7 @@ const Cell = ({onClickCell, onCellFire, data, onMouseEnter, onMouseUp, onMouseDo
         if(onMouseDown) onMouseDown(data.index);
     }
     
-    const colors: CellStateColors = {
+    const colors = {
         hidden: "bg-cellHidden",
         hit: "bg-cellHit",
         miss: "bg-cellMiss",

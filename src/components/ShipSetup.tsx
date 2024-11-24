@@ -5,7 +5,7 @@ import {CellData, ShipData, ShipOrientation, ShipPool, ShipPoolItem} from "../co
 import {invokeHubEvent, onHubEvent} from "../hubs/gameHub.tsx";
 import {isValidShipPlacement, rotateShip} from "../gameUtils/ShipPlacement.ts";
 import {useParams} from "react-router-dom";
-import {EClientState, EFleetSetupState} from "../common/Enums.ts";
+import {ECellState, EClientState, EFleetSetupState} from "../common/Enums.ts";
 
 type props ={
     clientState : EClientState | null,
@@ -42,7 +42,7 @@ const ShipSetup = ({clientState}: props) => {
 
         // Mark the cell as occupied.
         for(let i = 0; i < shipToPlace.numberOfSections; i++){
-            newBoardData[placementCoordinates[0] + placementCoordinates[1]*colTags.length].state = "ship";
+            newBoardData[placementCoordinates[0] + placementCoordinates[1]*colTags.length].state = ECellState.ship;
             newBoardData[placementCoordinates[0] + placementCoordinates[1]*colTags.length].unit = shipToPlace;
             placementCoordinates[0] += shipToPlace.orientation[0];
             placementCoordinates[1] += shipToPlace.orientation[1];
@@ -102,8 +102,8 @@ const ShipSetup = ({clientState}: props) => {
 
         // Remove all invalid placement cell states.
         newBoardData.forEach((cell)=>{
-            if(cell.state === "invalidPlacement" || cell.state === "validPlacement") {
-                cell.state = "hidden";
+            if(cell.state === ECellState.invalidPlacement || cell.state === ECellState.validPlacement) {
+                cell.state = ECellState.hidden;
             }
         })
 
@@ -113,12 +113,12 @@ const ShipSetup = ({clientState}: props) => {
 
         if(validPlacement){
             for(let i = 0; i < candidateShip.numberOfSections; i++){
-                newBoardData[placementCoordinates[0] + placementCoordinates[1]*colTags.length].state = "validPlacement";
+                newBoardData[placementCoordinates[0] + placementCoordinates[1]*colTags.length].state = ECellState.validPlacement;
                 placementCoordinates[0] += candidateShip.orientation[0];
                 placementCoordinates[1] += candidateShip.orientation[1];
             }
-        } else if(!validPlacement && newBoardData[cellIndex].state !== "ship"){
-            newBoardData[cellIndex].state = "invalidPlacement";
+        } else if(!validPlacement && newBoardData[cellIndex].state !== ECellState.ship){
+            newBoardData[cellIndex].state = ECellState.invalidPlacement;
         }
 
         setCellData(newBoardData);
@@ -127,7 +127,7 @@ const ShipSetup = ({clientState}: props) => {
     // Reset ship placement
     const resetShipPlacement = () => {
         const newBoardData = [...cellData];
-        newBoardData.forEach((cell)=>cell.state = "hidden");
+        newBoardData.forEach((cell)=>cell.state = ECellState.hidden);
         setCellData(newBoardData);
 
         const newAvailableShips = [...shipPool];
@@ -192,7 +192,7 @@ const ShipSetup = ({clientState}: props) => {
                 cellData.forEach(cell => {
                     if (cell.unit && cell.unit.id === selectedPlacedShip.id) {
                         cell.unit = null;
-                        cell.state = "hidden";
+                        cell.state = ECellState.hidden;
                     }
                     setCellData(newCellData);
                 })
@@ -351,7 +351,6 @@ const ShipSetup = ({clientState}: props) => {
                         onMouseEnterCell={handleShipDragOverCell}
                     />
                 </div>
-
                     <section 
                             id={"ShipList"}
                             className={"grid grid-rows-[auto_1fr_auto_auto] gap-y-1 h-full bg-BgA py-3 px-2 "}
@@ -383,8 +382,7 @@ const ShipSetup = ({clientState}: props) => {
                                     )}
                                 </ul>
                             </div>
-
-                        {clientState === EClientState.FleetSetup && 
+                            {clientState === EClientState.FleetSetup && 
                             <div className={"flex justify-around"}>
                                 <button
                                     className={"border px-3 py-2 mt-2 rounded-sm"}
@@ -411,10 +409,8 @@ const ShipSetup = ({clientState}: props) => {
                             > 
                                 Edit Fleet 
                             </button>
-                            
                         }
                     </section>
-                
             </div>
             {
                 selectedShip &&

@@ -20,3 +20,13 @@ export enum EFleetSetupState {
     validating = "Validating Position",
     validated = "Ready",
 }
+
+export enum ECellState {
+    hidden= "hidden",
+    hit= "hit",
+    ship= "ship",
+    miss= "miss",
+    sunk= "sunk",
+    validPlacement= "validPlacement",
+    invalidPlacement= "invalidPlacement",    
+}
