@@ -5,10 +5,8 @@ import Footer from '../components/Footer';
 type Props = {}
 
 const HomePage = ({ }: Props) => {
-    const [error, setError] = useState<Error | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
     const [gameCode, setGameCode] = useState<string | null>(null);
-
     const navigate = useNavigate();
 
     const onJoinGame = async (e: FormEvent<HTMLFormElement>) => {
@@ -16,11 +14,6 @@ const HomePage = ({ }: Props) => {
         setLoading(true);
 
         navigate(`/game/client/connect/${gameCode}`);
-
-        // Look for game and connect.
-        // If error, then show error message.
-        // Test loading functionality.
-
     }
 
     /** Update the form state */
@@ -58,20 +51,8 @@ const HomePage = ({ }: Props) => {
                                 minLength={36}
                                 maxLength={36} />
                         </label>
-                        <p className={error ? "text-red-700 font-semibold" : "text-white" + "text-sm"}>
-                            {!error && !loading &&
-                                <>
-                                    Enter the code provided by your game host.
-                                </>
-                                || error &&
-                                <>
-                                    *{error.message}
-                                </>
-                                || loading &&
-                                <>
-                                    Loading...
-                                </>
-                            }
+                        <p className={"text-white text-sm"}>
+                            {loading ? "Loading..." : "Enter the code provided by your game host."}
                         </p>
                         <button className='hover:bg-btnBgHover active:bg-btnBgActive bg-btnBg rounded-md border py-2 px-6 mx-auto' type="submit">
                             Join Game
