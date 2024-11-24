@@ -1,12 +1,12 @@
-// Todo: Convert CellState type with an enum.
-export type CellState = "hidden" | "hit" | "ship" | "miss" | "sunk" | "validPlacement" | "invalidPlacement";
+import {ECellState, EShipType} from "./Enums.ts";
+
 export type CellData = {
     index: number,
     pos: {
         x: number,
         y: number,
     }
-    state: CellState,
+    state: ECellState,
     unit?: ShipData | null,
     selected?: boolean,
 }
@@ -22,14 +22,12 @@ export interface GameData {
 }
 
 // Ships
-// Todo: replace the ShipType type with an enum.
-export type ShipType = "destroyer" | "submarine" | "carrier" | "frigate" | "battleship";
 export type ShipSize = 1 | 2 | 3 | 4 | 5;
 export type ShipOrientation = [1,0]|[-1,0]|[0,1]|[0,-1];
 export type SectionStatus = "ok" | "hit";
 export type ShipData = {
     id: string,
-    type: ShipType;
+    type: EShipType;
     pos: {
         x: number,
         y: number,

@@ -1,11 +1,11 @@
-import {CellData,CellTag} from '../types';
+import {CellData} from '../common/types';
 import Cell from './Cell';
 import Tag from './Tag';
 
 type Props = {
     boardTitle: string;
-    rowTags: CellTag[];
-    colTags: CellTag[];
+    rowTags: string[];
+    colTags: string[];
     cellData: CellData[];
     onMouseEnterCell?: (index: number) => void;
     onFireAtCell?: (index: number) => void;
