@@ -28,10 +28,13 @@ const joinHub : JoinHubResp  = async () => {
     }
     try{
         if(!connectionInstance) {
+            const apiURL: string  = import.meta.env.VITE_API_URL;
+            if(!apiURL) throw new Error("Missing API URL");
+            
             // Create a new connection
             connectionInstance =
                 new HubConnectionBuilder()
-                    .withUrl("https://mere-beatrice-maximus0-faf3a57e.koyeb.app/battlespeak")
+                    .withUrl(apiURL)
                     .configureLogging(LogLevel.Information)
                     .build();
             
