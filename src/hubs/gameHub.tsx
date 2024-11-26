@@ -31,7 +31,7 @@ const joinHub : JoinHubResp  = async () => {
             // Create a new connection
             connectionInstance =
                 new HubConnectionBuilder()
-                    .withUrl("http://192.168.0.220:5154/battlespeak")
+                    .withUrl("https://mere-beatrice-maximus0-faf3a57e.koyeb.app/battlespeak")
                     .configureLogging(LogLevel.Information)
                     .build();
             
