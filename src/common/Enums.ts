@@ -5,6 +5,8 @@ export enum EClientState {
     // In The OnGoing Game State.    
     WaitingForTurn,
     OnTurn,
+    ApprovingShot,
+    PendingShotApproval,
 }
 
 export enum EGameState {
