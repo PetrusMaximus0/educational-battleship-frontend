@@ -81,3 +81,41 @@ body {
         border-bottom-width: 1px;
     }
 }
+
+@layer components{
+    .button{
+        background-color:theme("colors.btnBg");
+        border-color: theme("colors.btnBorder");
+        color: theme("colors.btnTxt");
+        
+        padding: 0.25rem 0.75rem;
+        border-radius: 0.375rem;
+        
+        &:hover{
+            background-color:theme("colors.btnBgHover");
+            border-color: theme("colors.btnBorderHover");
+            color: theme("colors.btnTxtHover");
+                        
+        }
+        &:active{
+            background-color:theme("colors.btnBgActive");
+            border-color: theme("colors.btnBorderActive");
+            color: theme("colors.btnTxtActive");
+        }        
+    }
+    
+    .cell{
+        background-color: theme("colors.cellNormal");
+        border-color: theme("colors.cellBorder");
+        
+        &:hover{
+            background-color: theme("colors.cellHover");
+            border-color: theme("colors.cellBorderHover");
+        }
+
+        &:active{
+            background-color: theme("colors.cellActive");
+            border-color: theme("colors.cellBorderActive");
+        }        
+    }
+}
