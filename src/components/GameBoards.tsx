@@ -56,19 +56,36 @@ const GameBoards = ({playerState} : props) => {
         console.log(index);
     }
     const handleFireAtCell = async (index: number) => {
+        // If it is not the player's turn then return.
         if(playerState !== EClientState.OnTurn) return;
         
+        // set the tags and return from the function if the index is invalid.
+        if(!setConfirmTagsFromIndex(index, colTags.length, rowTags.length)) return;        
+        
         // Send cell shot to server.
-        const {error: hubError} = await invokeHubEvent("FireAtCell", id, index);        
+        const {error: hubError} = await invokeHubEvent("RequestShot", id, index);        
         if(hubError){
             setError(hubError);
-        }        
+        }
     }     
     const handleApproveShot = async () => {//
         const {error: hubError} = await invokeHubEvent("ApproveShot", id);
         if(hubError) setError(hubError);       
         setConfirmRowTag("");
         setConfirmColTag("");
+    }
+    const setConfirmTagsFromIndex = (index: number, width: number, height: number) =>{
+        const x = index % width;
+        const y = Math.floor(index/height);
+        
+        if(x<0 || x >= width || y<0 || y >= height){
+            setError(new Error("Invalid Shot Coordinates to Approve"));
+            return false;
+        }
+
+        setConfirmRowTag(rowTags[y]);
+        setConfirmColTag(colTags[x]);
+        return true;
     }
     
     // Register hub event handlers.
@@ -88,23 +105,14 @@ const GameBoards = ({playerState} : props) => {
             setPlayerBoardData(playerBoard);
             setOpponentBoardData(opponentBoard);
         }
-         
-        const handleGetApproveTags = (index: number) =>{
-            const x = index % colTags.length;
-            const y = Math.floor(index/ rowTags.length);
-            
-            if(x<0 || x>colTags.length || y<0 || y>rowTags.length){
-                setError(new Error("Invalid Shot Coordinates to Approve"));
-                return
-            }
-            
-            setConfirmRowTag(rowTags[y]);
-            setConfirmColTag(colTags[x]);
+        
+        const handleReceiveIndexToApprove = (index: number, width: number, height: number) => {
+            setConfirmTagsFromIndex(index, width, height);
         }
         
         onHubEvent("GameBoardsInit", handleGameBoardsInit);
         onHubEvent("UpdateBoards", handleUpdateGameBoards);
-        onHubEvent("ReceiveIndexToApprove", handleGetApproveTags);        
+        onHubEvent("ReceiveIndexToApprove", handleReceiveIndexToApprove);        
     },[])
 
     // Initialize the boards at game start.
@@ -114,7 +122,7 @@ const GameBoards = ({playerState} : props) => {
             if(hubError) setError(hubError);
         })()        
     },[])
-    
+        
     return (
         <section className={"text-center"}>
             <h2 className={"text-4xl py-4 my-4 bg-BgA relative min-h-44 flex items-center justify-center"}> 
@@ -123,6 +131,7 @@ const GameBoards = ({playerState} : props) => {
                     || playerState===EClientState.OnTurn && "Your turn!" 
                     || playerState===EClientState.WaitingForTurn && "Opponent's Turn!"
                     || playerState===EClientState.ApprovingShot && <ShotPrompt rowTag={confirmRowTag} colTag={confirmColTag} onClick={handleApproveShot} />
+                    || playerState===EClientState.PendingShotApproval && `${confirmColTag} ... ${confirmRowTag}`
                     || "Starting Game"
                 }
             </h2>
