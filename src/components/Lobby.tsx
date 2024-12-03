@@ -44,24 +44,18 @@ const Lobby = ({validId} : props)=> {
     
     return (
         validId && 
-        <section className={"text-center"}>
-            <div className={"text-center"}>
-                <h2 className={"mb-4 text-xl"}> Your session ID: </h2>
-                <div className={"flex gap-2 justify-center items-center"}>
-                    <p
-                        className={"my-2 flex gap-2 justify-center items-center"}
-                    >
-                        {id}
-                    </p>
-                    <button
-                        className={"hover:bg-btnBgHover active:bg-btnBgActive border px-3 py-2 rounded-sm"}
-                        onClick={handleCopyId}
-                    >
-                        {justCopiedId ? "Copied!" : "Copy ID"}
-                    </button>
+        <section className={"text-center h-full"}>
+            <h2 className={"mb-4 text-xl"}> Your session ID: </h2>
+            <p className={"flex flex-col justify-center sm:flex-row gap-3 items-center"}>
+                {id}
+                <button
+                    className={"hover:bg-btnBgHover active:bg-btnBgActive border px-3 py-2 rounded-sm"}
+                    onClick={handleCopyId}
+                >
+                    {justCopiedId ? "Copied!" : "Copy ID"}
+                </button>
     
-                </div>
-            </div>
+            </p>
         </section>
         || <p> Invalid session Id, returning home... </p>
     )

@@ -62,7 +62,7 @@ const TagSetupPage = () => {
     },[])
     
     return (
-        <div className='grid grid-rows-[auto_1fr_auto] gap-y-10 h- min-h-screen bg-BgB text-white'>
+        <div className='grid grid-rows-[auto_1fr_auto] gap-y-10 h-full min-h-screen bg-BgB text-white'>
             <header className='bg-BgA py-8 px-8'>
                 <div className='flex flex-col items-center justify-center gap-6'>
                     <h1 className='text-4xl'> Game Setup </h1>
@@ -77,7 +77,7 @@ const TagSetupPage = () => {
             <main className={"flex flex-col gap-3 justify-start items-center w-fit mx-auto"}>
                 <section className='flex flex-col justify-start gap-6' >
                     <h2 className={"text-4xl text-center"}> Current Tag Selection </h2>
-                    <div className={"bg-BgA flex justify-center items-start gap-6 border w-fit mx-auto px-4 py-4 rounded-md"}>
+                    <div className={"bg-BgA flex flex-wrap justify-center items-start gap-6 border w-fit mx-auto px-4 py-4 rounded-md"}>
                         <TagColumn 
                             title={"Row Tags"} 
                             tags={rowTags} 

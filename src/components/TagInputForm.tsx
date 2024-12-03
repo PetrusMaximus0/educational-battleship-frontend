@@ -18,29 +18,27 @@ const TagInputForm = ({title, handleAdd}:props) => {
         }
     }
     
-    return(
-        
-    <form 
-        onSubmit={handleFormSubmit}
-        className={"flex items-center justify-between gap-2"}>
-        {title}
-        <input
-            className={"px-1 py-1 bg-inputBgA rounded-sm"}
-            type={"text"}
-            value={value}
-            onChange={handleChange}
-            minLength={1}
-            required
-        />
-        <button
-            type={"submit"}
-            className={"border px-3 py-1 rounded-sm bg-btnBg hover:bg-btnBgHover active:bg-btnBgActive"}
-        >
-            Add
-        </button>
-    </form>
+    return(        
+        <form 
+            onSubmit={handleFormSubmit}
+            className={"flex items-center justify-between gap-2"}>
+            {title}
+            <input
+                className={"px-1 py-1 w-full bg-inputBgA rounded-sm"}
+                type={"text"}
+                value={value}
+                onChange={handleChange}
+                minLength={1}
+                required
+            />
+            <button
+                type={"submit"}
+                className={"border px-3 py-1 rounded-sm bg-btnBg hover:bg-btnBgHover active:bg-btnBgActive"}
+            >
+                Add
+            </button>
+        </form>
     )
-
 }
 
 export default TagInputForm;

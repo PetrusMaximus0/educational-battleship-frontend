@@ -117,7 +117,7 @@ const GameBoards = ({playerState} : props) => {
     
     return (
         <section className={"text-center"}>
-            <h2 className={"text-4xl py-4 my-4 bg-BgA"}> 
+            <h2 className={"text-4xl py-4 my-4 bg-BgA relative min-h-44 flex items-center justify-center"}> 
                 {
                     error && <span className={"text-red-600"}> {error.message} </span>
                     || playerState===EClientState.OnTurn && "Your turn!" 

@@ -142,7 +142,7 @@ const Game = ()=>{
                     
                 </div>
             </div>
-            <main className={"relative grid grid-rows-[auto_1fr_auto] gap-y-8 justify-items-center"}>
+            <main className={"relative grid grid-rows-[auto_1fr_auto] gap-y-8 justify-center h-full"}>
                 <header className={"flex items-center w-full justify-center py-4 px-8 bg-BgA"}>
                     <h2> 
                     {
