@@ -58,7 +58,7 @@ const ShipSetup = ({clientState}: props) => {
         resetShipPlacement();
 
         const boardWidth = colTags.length;
-        const boardHeight = colTags.length;
+        const boardHeight = rowTags.length;
 
         //
         const newShipPool = [...shipPool];
