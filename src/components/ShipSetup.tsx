@@ -78,7 +78,7 @@ const ShipSetup = ({clientState}: props) => {
                     };
 
                     item.ship.orientation = randomDirection() as ShipOrientation;
-                    if(isValidShipPlacement(item.ship, randomCoordinates, boardHeight, boardWidth, cellData)){
+                    if(isValidShipPlacement(item.ship, randomCoordinates, boardWidth, boardHeight, cellData)){
                         placeShip(item.ship, randomCoordinates);
                         item.placed = true;
                         break;
@@ -261,6 +261,7 @@ const ShipSetup = ({clientState}: props) => {
         setSetupState(EFleetSetupState.validating);
         const shipData = shipPool.map((item)=> item.ship);
         
+        setError(null);
         const {error: hubError} = await invokeHubEvent("ValidateFleetPlacement", id, shipData);
         if(hubError){
             setError(hubError);
@@ -269,6 +270,7 @@ const ShipSetup = ({clientState}: props) => {
     }
     
     const handleEditFleet = async ()=> {
+        setError(null);
         const {error: hubError} = await invokeHubEvent("CancelFleetPlacement", id);
         if(hubError){
             setError(hubError);
