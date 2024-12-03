@@ -71,9 +71,7 @@ const getBoardWithShips = () => {
     mockShipData.forEach((ship)=> {
         for(let i = 0; i< ship.numberOfSections; i++){
             const sectionShipCoords = [ship.pos.x + ship.orientation[0] * i, ship.pos.y + ship.orientation[1] * i];
-            console.log(sectionShipCoords);
             const cellIndex = sectionShipCoords[0] + inColTags.length * sectionShipCoords[1];
-            console.log(cellIndex);
             board[cellIndex].state = ECellState.ship;
         }        
     })
