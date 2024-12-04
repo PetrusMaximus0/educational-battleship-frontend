@@ -87,6 +87,13 @@ const onHubEvent = (eventName: string, callback: OnHubEventHandler) =>{
     if(!connectionInstance) return;
     connectionInstance.on(eventName, callback);    
 }
+
+/** Unbinds events */
+const offHubEvent = (eventName: string, callback: OnHubEventHandler) =>{
+    if(!connectionInstance) return;
+    connectionInstance.off(eventName, callback);    
+}
+
 /***/
 const getHubConnectionState = () =>{
     return connectionInstance ? connectionInstance.state : null;
@@ -112,4 +119,4 @@ const invokeHubEvent = async (eventName: string, ...eventArgs: any[]) => {
     }
 }
 /***/
-export {invokeHubEvent, onHubEvent, onHubClose, closeHub, joinHub, getHubConnectionState}
+export {invokeHubEvent, onHubEvent, offHubEvent, onHubClose, closeHub, joinHub, getHubConnectionState}

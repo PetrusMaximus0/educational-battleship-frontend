@@ -3,7 +3,7 @@ import {useEffect, useState} from "react";
 import {CellData} from "../common/types.tsx";
 import {useParams} from "react-router-dom";
 import {EClientState} from "../common/Enums.ts";
-import {invokeHubEvent, onHubEvent} from "../hubs/gameHub.tsx";
+import {invokeHubEvent, offHubEvent, onHubEvent} from "../hubs/gameHub.tsx";
 import ShotPrompt from "./ShotPrompt.tsx";
 
 type props = {
@@ -60,7 +60,7 @@ const GameBoards = ({playerState} : props) => {
         if(playerState !== EClientState.OnTurn) return;
         
         // set the tags and return from the function if the index is invalid.
-        if(!setConfirmTagsFromIndex(index, colTags.length, rowTags.length)) return;        
+        if(!setConfirmTagsFromIndex(index, rowTags.length, colTags.length)) return;        
         
         // Send cell shot to server.
         const {error: hubError} = await invokeHubEvent("RequestShot", id, index);        
@@ -74,17 +74,22 @@ const GameBoards = ({playerState} : props) => {
         setConfirmRowTag("");
         setConfirmColTag("");
     }
-    const setConfirmTagsFromIndex = (index: number, width: number, height: number) =>{
+    const setConfirmTagsFromIndex = (index: number, height: number, width: number) =>{
         const x = index % width;
-        const y = Math.floor(index/height);
-        
-        if(x<0 || x >= width || y<0 || y >= height){
-            setError(new Error("Invalid Shot Coordinates to Approve"));
+        const y = Math.floor(index/width);
+                
+        if(x < 0 || x >= width) {
+            setError(new Error("Invalid Shot Coordinates to Approve, X is out of bounds."));
             return false;
         }
-
+        if(y < 0 || y >= height){
+            setError(new Error("Invalid Shot Coordinates to Approve. Y is out of bounds."));
+            return false;
+        }
+        
         setConfirmRowTag(rowTags[y]);
         setConfirmColTag(colTags[x]);
+        
         return true;
     }
     
@@ -106,14 +111,21 @@ const GameBoards = ({playerState} : props) => {
             setOpponentBoardData(opponentBoard);
         }
         
-        const handleReceiveIndexToApprove = (index: number, width: number, height: number) => {
-            setConfirmTagsFromIndex(index, width, height);
-        }
-        
         onHubEvent("GameBoardsInit", handleGameBoardsInit);
-        onHubEvent("UpdateBoards", handleUpdateGameBoards);
-        onHubEvent("ReceiveIndexToApprove", handleReceiveIndexToApprove);        
+        onHubEvent("UpdateBoards", handleUpdateGameBoards);       
     },[])
+    
+    //
+    useEffect(()=>{
+        const handleReceiveIndexToApprove = (index: number, width: number, height: number) => {
+            setConfirmTagsFromIndex(index, height, width);
+        }
+        onHubEvent("ReceiveIndexToApprove", handleReceiveIndexToApprove);
+        
+        return ()=>{
+            offHubEvent("ReceiveIndexToApprove", handleReceiveIndexToApprove);
+        }
+    },[rowTags, colTags]);
 
     // Initialize the boards at game start.
     useEffect(()=>{
@@ -122,7 +134,7 @@ const GameBoards = ({playerState} : props) => {
             if(hubError) setError(hubError);
         })()        
     },[])
-        
+    
     return (
         <section className={"text-center"}>
             <h2 className={"text-4xl py-4 my-4 bg-BgA relative min-h-44 flex items-center justify-center"}> 
