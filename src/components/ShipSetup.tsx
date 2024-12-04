@@ -78,7 +78,7 @@ const ShipSetup = ({clientState}: props) => {
                     };
 
                     item.ship.orientation = randomDirection() as ShipOrientation;
-                    if(isValidShipPlacement(item.ship, randomCoordinates, boardWidth, boardHeight, cellData)){
+                    if(isValidShipPlacement(item.ship, randomCoordinates, boardHeight, boardWidth, cellData)){
                         placeShip(item.ship, randomCoordinates);
                         item.placed = true;
                         break;
@@ -89,8 +89,8 @@ const ShipSetup = ({clientState}: props) => {
         setShipPool(newShipPool);
 
         // Check if all ships were placed, and if they were set the game state to "ships placed".
-        const allShipsPlaced = newShipPool.findIndex((item)=> !item.placed);
-        if(allShipsPlaced===-1){//-1 means we couldn't find a ship that wasn't placed.
+        const unplacedShip = newShipPool.findIndex((item)=> !item.placed);
+        if(unplacedShip===-1){//-1 means we couldn't find a ship that wasn't placed.
             setSetupState(EFleetSetupState.placed);
         }
     }
@@ -113,7 +113,8 @@ const ShipSetup = ({clientState}: props) => {
 
         if(validPlacement){
             for(let i = 0; i < candidateShip.numberOfSections; i++){
-                newBoardData[placementCoordinates[0] + placementCoordinates[1]*colTags.length].state = ECellState.validPlacement;
+                const placementCellIndex = placementCoordinates[0] + placementCoordinates[1]*colTags.length;
+                newBoardData[placementCellIndex].state = ECellState.validPlacement;
                 placementCoordinates[0] += candidateShip.orientation[0];
                 placementCoordinates[1] += candidateShip.orientation[1];
             }

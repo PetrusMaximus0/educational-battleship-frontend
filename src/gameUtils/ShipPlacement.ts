@@ -2,15 +2,15 @@ import {CellData, ShipData} from "../common/types";
 import {ECellState} from "../common/Enums.ts";
 
 const inBounds = (coord: number, ort: number, len: number, boardDim: number) => {
-    return coord >= 0
-        && coord <= boardDim       
-        && coord + ort * (len) <= boardDim
-        && coord + ort * (len-1) >= 0;
+    const maxCoord = coord + ort * (len - 1);
+    const minInBounds = coord >= 0 && coord < boardDim;
+    const maxInBounds = maxCoord >= 0 && maxCoord < boardDim;
+    return minInBounds && maxInBounds;
 }
 
 // By storing ship part positions it's possible to simply calculate the manhattan distance to every ship part 
 // and check if it is greater to one, in which case the placement is valid.
-const cellsFree  = (cellData:CellData[], width: number, height: number, placementCoordinates: number[], candidateShip: ShipData) => {
+const cellsFree  = (cellData:CellData[], height: number, width: number,  placementCoordinates: number[], candidateShip: ShipData) => {
     for (let i = 0; i < candidateShip.numberOfSections; i += 1) {
         const newCoords = [
             placementCoordinates[0] + i * candidateShip.orientation[0],
@@ -34,7 +34,7 @@ const cellsFree  = (cellData:CellData[], width: number, height: number, placemen
 }
 
 // Returns true if the current ship placement is valid, and false otherwise.
-export const isValidShipPlacement = (candidateShip: ShipData, placementCoordinates: number[], width: number, height: number, cellData: CellData[]) =>{
+export const isValidShipPlacement = (candidateShip: ShipData, placementCoordinates: number[], height: number, width: number, cellData: CellData[]) =>{
     // Check if the ship is within the board's bounds.
     const XValid = inBounds(placementCoordinates[0], candidateShip.orientation[0], candidateShip.numberOfSections, width);
     const YValid = inBounds(placementCoordinates[1], candidateShip.orientation[1], candidateShip.numberOfSections, height);
@@ -43,7 +43,7 @@ export const isValidShipPlacement = (candidateShip: ShipData, placementCoordinat
     }
 
     // Check if the cells to place the ship on are all free.
-    if(!cellsFree(cellData, width, height, placementCoordinates, candidateShip)){
+    if(!cellsFree(cellData, height, width, placementCoordinates, candidateShip)){
         return false
     }
 
