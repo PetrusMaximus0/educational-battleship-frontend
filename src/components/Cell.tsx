@@ -51,6 +51,7 @@ const Cell = ({onClickCell, onCellFire, data, onMouseEnter, onMouseUp, onMouseDo
         hidden: "bg-cellHidden",
         hit: "bg-cellHit",
         miss: "bg-cellMiss",
+        revealed: "bg-cellRevealed",
         ship: "bg-cellShip",
         sunk: "bg-cellSunk",
         validPlacement: "bg-green-500",

@@ -28,6 +28,7 @@ export enum ECellState {
     hit= "hit",
     ship= "ship",
     miss= "miss",
+    revealed="revealed",
     sunk= "sunk",
     validPlacement= "validPlacement",
     invalidPlacement= "invalidPlacement",    
