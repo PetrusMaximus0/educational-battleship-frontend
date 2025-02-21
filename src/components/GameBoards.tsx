@@ -27,6 +27,9 @@ const GameBoards = ({playerState} : props) => {
     
     // Handle clicking a cell on the opponents board.
     const handleClickOpponentBoardCell = (index: number) => {
+        if(playerState===EClientState.Victor || playerState===EClientState.Defeated){
+            return;
+        }
         const newBoardData = [...opponentBoardData];
         if(index===selectedCell){
             // Clicking on the same cell, deselect the cell.
@@ -144,6 +147,8 @@ const GameBoards = ({playerState} : props) => {
                     || playerState===EClientState.WaitingForTurn && "Opponent's Turn!"
                     || playerState===EClientState.ApprovingShot && <ShotPrompt rowTag={confirmRowTag} colTag={confirmColTag} onClick={handleApproveShot} />
                     || playerState===EClientState.PendingShotApproval && `${confirmColTag} ... ${confirmRowTag}`
+                    || playerState===EClientState.Defeated && "You Lose!"
+                    || playerState===EClientState.Victor && "You Win!"
                     || "Starting Game"
                 }
             </h2>

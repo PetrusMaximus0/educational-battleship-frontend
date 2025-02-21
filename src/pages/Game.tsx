@@ -156,7 +156,7 @@ const Game = ()=>{
                     gameState == EGameState.Lobby && <Lobby validId={validId}/> 
                     || gameState == EGameState.FleetSetup && <ShipSetup clientState={clientState}/>
                     || gameState == EGameState.GameOnGoing && <GameBoards playerState={clientState} /> 
-                    || gameState == EGameState.GameOver && <SessionMessage message={"Game Over!"}/>
+                    || gameState == EGameState.GameOver && <GameBoards playerState={clientState}/>
                 }
             </main>
             <Footer/>

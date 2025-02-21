@@ -7,6 +7,9 @@ export enum EClientState {
     OnTurn,
     ApprovingShot,
     PendingShotApproval,
+    // Post Game
+    Defeated,
+    Victor
 }
 
 export enum EGameState {
