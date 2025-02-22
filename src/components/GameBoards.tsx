@@ -1,5 +1,5 @@
 import Board from "./Board.tsx";
-import {useEffect, useState} from "react";
+import {useCallback, useEffect, useState} from "react";
 import {CellData} from "../common/types.tsx";
 import {useParams} from "react-router-dom";
 import {EClientState} from "../common/Enums.ts";
@@ -77,10 +77,11 @@ const GameBoards = ({playerState} : props) => {
         setConfirmRowTag("");
         setConfirmColTag("");
     }
-    const setConfirmTagsFromIndex = (index: number, height: number, width: number) =>{
+
+    const setConfirmTagsFromIndex = useCallback((index: number, height: number, width: number) => {
         const x = index % width;
         const y = Math.floor(index/width);
-                
+
         if(x < 0 || x >= width) {
             setError(new Error("Invalid Shot Coordinates to Approve, X is out of bounds."));
             return false;
@@ -89,13 +90,13 @@ const GameBoards = ({playerState} : props) => {
             setError(new Error("Invalid Shot Coordinates to Approve. Y is out of bounds."));
             return false;
         }
-        
+
         setConfirmRowTag(rowTags[y]);
         setConfirmColTag(colTags[x]);
-        
+
         return true;
-    }
-    
+    }, [rowTags, colTags]);
+
     // Register hub event handlers.
     useEffect(()=>{
         const handleGameBoardsInit = (rowTags: string[], colTags: string[], playerBoardData: CellData[], opponentBoardData: CellData[]) => {
@@ -128,7 +129,7 @@ const GameBoards = ({playerState} : props) => {
         return ()=>{
             offHubEvent("ReceiveIndexToApprove", handleReceiveIndexToApprove);
         }
-    },[rowTags, colTags]);
+    },[setConfirmTagsFromIndex]);
 
     // Initialize the boards at game start.
     useEffect(()=>{
@@ -136,7 +137,7 @@ const GameBoards = ({playerState} : props) => {
             const { error: hubError } = await invokeHubEvent("BeginGame", id);
             if(hubError) setError(hubError);
         })()        
-    },[])
+    },[id])
     
     return (
         <section className={"text-center"}>
