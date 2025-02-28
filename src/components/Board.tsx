@@ -12,7 +12,6 @@ type Props = {
     onClickCell?: (index: number) => void;
     onMouseUpCell?: (index:number)=>void;
     onMouseDownCell?: (index:number)=>void;
-    
 }
 
 const Board = ({boardTitle, rowTags, colTags, cellData, onMouseEnterCell, onFireAtCell, onClickCell, onMouseUpCell, onMouseDownCell}: Props) => {

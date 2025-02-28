@@ -38,3 +38,11 @@ export type ShipData = {
 }
 export type ShipPoolItem = {ship: ShipData, placed: boolean};
 export type ShipPool =  ShipPoolItem[];
+
+// Tag setup
+export type tagTemplate = {
+    id: string,
+    name: string,
+    rows: string[],
+    cols: string[],
+}

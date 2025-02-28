@@ -4,6 +4,8 @@ import {mockGameData} from "../gameUtils/mockGameData.ts";
 import {useEffect, useState} from "react";
 import TagColumn from "../components/TagColumn.tsx";
 import {invokeHubEvent, joinHub, onHubEvent} from "../hubs/gameHub.tsx";
+import TagTemplateForm from "../components/TagTemplateForm.tsx";
+import {tagTemplate} from "../common/types.tsx";
 
 const TagSetupPage = () => {
     const [rowTags, setRowTags] = useState<string[]>([]);
@@ -60,7 +62,12 @@ const TagSetupPage = () => {
         setRowTags(mockGameData.rowTags);
         setColTags(mockGameData.colTags);
     },[])
-    
+
+    const handleTemplateSelectSubmit = (template: tagTemplate) => {
+        setRowTags([...template.rows]);
+        setColTags([...template.cols]);
+    }
+
     return (
         <div className='grid grid-rows-[auto_1fr_auto] gap-y-10 h-full min-h-screen bg-BgB text-white'>
             <header className='bg-BgA py-8 px-8'>
@@ -74,11 +81,14 @@ const TagSetupPage = () => {
                     </Link>
                 </div>
             </header>
-            <main className={"flex flex-col gap-3 justify-start items-center w-fit mx-auto"}>
+            <main className={"flex gap-3 justify-start items-center w-fit mx-auto"}>
                 <section className='flex flex-col justify-start gap-6' >
                     <h2 className={"text-4xl text-center"}> Current Tag Selection </h2>
-                    <div className={"bg-BgA flex flex-wrap justify-center items-start gap-6 border w-fit mx-auto px-4 py-4 rounded-md"}>
-                        <TagColumn 
+                    <div className={"bg-BgA grid grid-cols-2 justify-center items-start gap-6 border w-fit mx-auto px-4 py-4 rounded-md"}>
+                        <aside className={"col-span-2"}>
+                            <TagTemplateForm handleSubmit={handleTemplateSelectSubmit}/>
+                        </aside>
+                        <TagColumn
                             title={"Row Tags"} 
                             tags={rowTags} 
                             handleAddTag={handleAddRowTag} 
