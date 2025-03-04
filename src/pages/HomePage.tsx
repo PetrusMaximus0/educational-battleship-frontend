@@ -1,10 +1,9 @@
 import { ChangeEvent, FormEvent, useState } from 'react'
-import {Link, useNavigate} from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
 import Footer from '../components/Footer';
+import LobbyButton from "../components/LobbyButton.tsx";
 
-type Props = {}
-
-const HomePage = ({ }: Props) => {
+const HomePage = () => {
     const [loading, setLoading] = useState<boolean>(false);
     const [gameCode, setGameCode] = useState<string | null>(null);
     const navigate = useNavigate();
@@ -12,12 +11,11 @@ const HomePage = ({ }: Props) => {
     const onJoinGame = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setLoading(true);
-
         navigate(`/game/client/connect/${gameCode}`);
     }
 
     /** Update the form state */
-    const onInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
         // Should perform validation
         const newVal = e.target.value;
         setGameCode(newVal);
@@ -33,11 +31,9 @@ const HomePage = ({ }: Props) => {
             </header>
             <main className='py-12 px-8'>
                 <section className='flex flex-col max-w-screen-md items-center mx-auto gap-4 px-4 py-8 bg-BgA rounded-lg'>
-                    <h2 className="text-4xl font-light text-center pb-6">
-                        Let's get started...
-                    </h2>
+                    <h2 className="text-4xl font-light text-center pb-6"> Let's get started... </h2>
                     <hr className='border-1 w-full' />
-                    <form name='join-game' className='px-4 py-6 mx-auto flex flex-col gap-4' onSubmit={onJoinGame} >
+                    <form name='join-game' className='px-4 py-6 flex flex-col gap-4' onSubmit={onJoinGame} >
                         <label className='flex gap-6 items-center justify-start text-nowrap' htmlFor="game-code">
                             Game Code:
                             <input
@@ -45,7 +41,7 @@ const HomePage = ({ }: Props) => {
                                 type="text"
                                 name="game-code"
                                 id="game-code"
-                                onChange={onInputChange}
+                                onChange={handleInputChange}
                                 value={gameCode ? gameCode : ""}
                                 required
                                 minLength={36}
@@ -59,14 +55,9 @@ const HomePage = ({ }: Props) => {
                         </button>
                     </form>
                     <hr className='border-1 w-full' />
-                    <div className="px-4 pt-6 w-full h-full flex justify-center">
-                        <Link
-                            className='hover:bg-btnBgHover active:bg-btnBgActive bg-btnBg border rounded-md py-2 px-6 text-center'
-                            to={"/game/tag-setup"}
-                        >
-                            Host Game
-                        </Link>
-                    </div>
+                    <LobbyButton route={"/game/local"} text={"Local Play"}/>
+                    <hr className='border-1 w-full' />
+                    <LobbyButton route={"/game/tag-setup"} text={" Host Game"}/>
                 </section>
             </main>
             <Footer />
