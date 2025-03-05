@@ -1,9 +1,9 @@
 import {Link, useNavigate, useParams} from "react-router-dom";
-import Footer from "../components/Footer.tsx";
+import Footer from "../../components/Footer.tsx";
 import {useEffect, useState} from "react";
-import {joinHub} from "../hubs/gameHub.tsx";
+import {joinHub} from "../../services/gameHub.tsx";
 
-const ClientConnectRedirect = () => {
+const ClientConnectRedirectPage = () => {
     const [error, setError] = useState<Error|null>(null);
     const navigate = useNavigate();
     const {id} = useParams();
@@ -53,4 +53,4 @@ const ClientConnectRedirect = () => {
         <Footer/>
     </div>
 }
-export default ClientConnectRedirect
+export default ClientConnectRedirectPage

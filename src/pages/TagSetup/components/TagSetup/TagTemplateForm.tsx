@@ -1,6 +1,6 @@
 import {ChangeEvent, FormEvent, useEffect, useState} from "react";
-import {tagTemplate} from "../common/types.tsx";
-import {getTagTemplates} from "../gameUtils/tagTemplates.ts";
+import {tagTemplate} from "../../../../types/types.tsx";
+import {templates} from "../../../../data/tagTemplates.ts";
 
 type props = {
     handleSubmit: (template: tagTemplate)=>void,
@@ -9,7 +9,7 @@ const TagTemplateForm = ({handleSubmit}: props) => {
     const [tagTemplates, setTagTemplates] = useState<tagTemplate[]>([]);
 
     useEffect(() => {
-       setTagTemplates([...getTagTemplates()]);
+       setTagTemplates([...templates]);
     }, []);
 
     const handleOnChange = (e: ChangeEvent<HTMLSelectElement>) => {

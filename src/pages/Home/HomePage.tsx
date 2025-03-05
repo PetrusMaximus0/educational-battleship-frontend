@@ -1,7 +1,7 @@
 import { ChangeEvent, FormEvent, useState } from 'react'
 import {useNavigate} from 'react-router-dom';
-import Footer from '../components/Footer';
-import LobbyButton from "../components/LobbyButton.tsx";
+import Footer from '../../components/Footer.tsx';
+import HomePageButton from "./components/HomePageButton.tsx";
 
 const HomePage = () => {
     const [loading, setLoading] = useState<boolean>(false);
@@ -55,9 +55,9 @@ const HomePage = () => {
                         </button>
                     </form>
                     <hr className='border-1 w-full' />
-                    <LobbyButton route={"/game/local"} text={"Local Play"}/>
+                    <HomePageButton route={"/game/local"} text={"Local Play"}/>
                     <hr className='border-1 w-full' />
-                    <LobbyButton route={"/game/tag-setup"} text={" Host Game"}/>
+                    <HomePageButton route={"/game/tag-setup"} text={" Host Game"}/>
                 </section>
             </main>
             <Footer />

@@ -1,4 +1,4 @@
-import {ShipData} from "../common/types.tsx";
+import {ShipData} from "../../../../types/types.tsx";
 import React from "react";
 
 type props = {

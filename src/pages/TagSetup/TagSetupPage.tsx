@@ -1,11 +1,11 @@
 import {useNavigate} from "react-router-dom";
-import {mockGameData} from "../gameUtils/mockGameData.ts";
+import {emptyBoards} from "../../utils/BoardInit.ts";
 import {useEffect, useState} from "react";
-import TagColumn from "../components/TagColumn.tsx";
-import {invokeHubEvent, joinHub, onHubEvent} from "../hubs/gameHub.tsx";
-import TagTemplateForm from "../components/TagTemplateForm.tsx";
-import {tagTemplate} from "../common/types.tsx";
-import BaseLayout from "../layouts/BaseLayout.tsx";
+import TagColumn from "./components/TagSetup/TagColumn.tsx";
+import {invokeHubEvent, joinHub, onHubEvent} from "../../services/gameHub.tsx";
+import TagTemplateForm from "./components/TagSetup/TagTemplateForm.tsx";
+import {tagTemplate} from "../../types/types.tsx";
+import BaseLayout from "../../layouts/BaseLayout.tsx";
 
 const TagSetupPage = () => {
     const [rowTags, setRowTags] = useState<string[]>([]);
@@ -62,8 +62,8 @@ const TagSetupPage = () => {
 
     useEffect(()=>{
         // Loads defaults
-        setRowTags(mockGameData.rowTags);
-        setColTags(mockGameData.colTags);
+        setRowTags(emptyBoards.rowTags);
+        setColTags(emptyBoards.colTags);
     },[])
 
     const handleTemplateSelectSubmit = (template: tagTemplate) => {
@@ -72,7 +72,7 @@ const TagSetupPage = () => {
     }
 
     return (
-        <BaseLayout headerTitle={"Tag Setup"}>
+        <BaseLayout headerTitle={"BoardTag Setup"}>
             <section className='flex flex-col justify-start gap-6' >
                 <h2 className={"text-4xl text-center"}> Current Tag Selection </h2>
                 <div className={"bg-BgA grid grid-cols-2 justify-center items-start gap-6 border w-fit mx-auto px-4 py-4 rounded-md"}>

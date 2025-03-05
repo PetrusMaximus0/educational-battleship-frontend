@@ -1,16 +1,16 @@
-import Board from "./Board.tsx";
+import PlayerBoard from "./PlayerBoard.tsx";
 import {useCallback, useEffect, useState} from "react";
-import {CellData} from "../common/types.tsx";
+import {CellData} from "../../../../types/types.tsx";
 import {useParams} from "react-router-dom";
-import {EClientState} from "../common/Enums.ts";
-import {invokeHubEvent, offHubEvent, onHubEvent} from "../hubs/gameHub.tsx";
+import {EClientState} from "../../../../enums/Enums.ts";
+import {invokeHubEvent, offHubEvent, onHubEvent} from "../../../../services/gameHub.tsx";
 import ShotPrompt from "./ShotPrompt.tsx";
 
 type props = {
     playerState : EClientState | null,
 }
 
-const GameBoards = ({playerState} : props) => {
+const GameBoard = ({playerState} : props) => {
     const [error, setError] = useState<Error | null>(null);    
     //
     const [rowTags, setRowTags] = useState<string[]>([]);
@@ -154,7 +154,7 @@ const GameBoards = ({playerState} : props) => {
                 }
             </h2>
             <div className='flex gap-4 justify-center items-center'>
-                <Board
+                <PlayerBoard
                     onClickCell={handleClickPlayerBoardCell}
                     onFireAtCell={handleFireAtCell}
                     boardTitle={"Your Ships"}
@@ -162,7 +162,7 @@ const GameBoards = ({playerState} : props) => {
                     colTags={colTags}
                     cellData={playerBoardData}
                 />
-                <Board
+                <PlayerBoard
                     onClickCell={handleClickOpponentBoardCell}
                     onFireAtCell={handleFireAtCell}
                     boardTitle={"Opponent's Ships"}
@@ -175,4 +175,4 @@ const GameBoards = ({playerState} : props) => {
     )
 }
 
-export default GameBoards
+export default GameBoard

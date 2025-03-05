@@ -5,7 +5,7 @@ type Props = {
     classes: string,
 }
 
-const Tag = ({ tag, classes }: Props) => {
+const BoardTag = ({ tag, classes }: Props) => {
     const [seeDetail, setSeeDetail] = useState(false);
 
     return (
@@ -27,4 +27,4 @@ const Tag = ({ tag, classes }: Props) => {
     )
 }
 
-export default Tag
+export default BoardTag;

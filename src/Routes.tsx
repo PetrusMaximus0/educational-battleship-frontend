@@ -1,8 +1,8 @@
-import Game from "./pages/Game.tsx"
-import HomePage from './pages/HomePage'
-import ErrorPage from './pages/ErrorPage'
-import TagSetupPage from "./pages/TagSetupPage.tsx";
-import ClientConnectRedirect from "./pages/ClientConnectRedirect.tsx";
+import GamePage from "./pages/Game/GamePage.tsx"
+import HomePage from './pages/Home/HomePage.tsx'
+import ErrorPage from './pages/Error/ErrorPage.tsx'
+import TagSetupPage from "./pages/TagSetup/TagSetupPage.tsx";
+import ClientConnectRedirectPage from "./pages/ClientConnectRedirect/ClientConnectRedirectPage.tsx";
 
 export const routes = [
     {
@@ -15,14 +15,14 @@ export const routes = [
     },
     {
         path: "/game/client/connect/:id",
-        element: <ClientConnectRedirect/>
+        element: <ClientConnectRedirectPage/>
     },
     {
         path: "/game/:id",
-        element: <Game/>
+        element: <GamePage/>
     },
     {
         path: "/*",
         element: <ErrorPage />
-    }
+    },
 ]

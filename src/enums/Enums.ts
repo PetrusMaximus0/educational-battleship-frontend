@@ -2,7 +2,7 @@ export enum EClientState {
     // In Fleet Setup game state
     FleetSetup,
     FleetReady,
-    // In The OnGoing Game State.    
+    // In The OnGoing Game State.
     WaitingForTurn,
     OnTurn,
     ApprovingShot,

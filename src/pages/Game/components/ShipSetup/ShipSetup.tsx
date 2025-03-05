@@ -1,11 +1,11 @@
 import Ship from "./Ship.tsx";
-import Board from "./Board.tsx";
+import PlayerBoard from "../GameBoard/PlayerBoard.tsx";
 import React, {useEffect, useState} from "react";
-import {CellData, ShipData, ShipOrientation, ShipPool, ShipPoolItem} from "../common/types.tsx";
-import {invokeHubEvent, onHubEvent} from "../hubs/gameHub.tsx";
-import {isValidShipPlacement, rotateShip} from "../gameUtils/ShipPlacement.ts";
+import {CellData, ShipData, ShipOrientation, ShipPool, ShipPoolItem} from "../../../../types/types.tsx";
+import {invokeHubEvent, onHubEvent} from "../../../../services/gameHub.tsx";
+import {isValidShipPlacement, rotateShip} from "../../../../utils/ShipPlacement.ts";
 import {useParams} from "react-router-dom";
-import {ECellState, EClientState, EFleetSetupState} from "../common/Enums.ts";
+import {ECellState, EClientState, EFleetSetupState} from "../../../../enums/Enums.ts";
 
 type props ={
     clientState : EClientState | null,
@@ -340,7 +340,7 @@ const ShipSetup = ({clientState}: props) => {
             >
                 <div className={"flex flex-col items-center bg-BgA gap-1  py-3 px-2"}>
                     <h2 className={"text-2xl text-center px-4 py-2"}>Fleet Status: {setupState} </h2>
-                    <Board
+                    <PlayerBoard
                         boardTitle={""}
                         rowTags={rowTags}
                         colTags={colTags}

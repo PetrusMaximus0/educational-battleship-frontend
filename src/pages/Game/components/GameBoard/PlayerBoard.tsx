@@ -1,7 +1,6 @@
-import {CellData} from '../common/types';
-import Cell from './Cell';
-import Tag from './Tag';
-import {v4 as uuidv4} from "uuid";
+import {CellData} from '../../../../types/types.tsx';
+import Cell from './Cell.tsx';
+import BoardTag from './BoardTag.tsx';
 
 type Props = {
     boardTitle: string;
@@ -15,7 +14,7 @@ type Props = {
     onMouseDownCell?: (index:number)=>void;
 }
 
-const Board = ({boardTitle, rowTags, colTags, cellData, onMouseEnterCell, onFireAtCell, onClickCell, onMouseUpCell, onMouseDownCell}: Props) => {
+const PlayerBoard = ({boardTitle, rowTags, colTags, cellData, onMouseEnterCell, onFireAtCell, onClickCell, onMouseUpCell, onMouseDownCell}: Props) => {
     return (
         <section className='grid grid-rows-[auto_auto_1fr] grid-cols-[auto_1fr] w-fit rounded-md text-xs bg-BgA'>
             <h2 className="py-3.5 justify-self-center row-start-1 text-3xl col-span-2">
@@ -23,18 +22,18 @@ const Board = ({boardTitle, rowTags, colTags, cellData, onMouseEnterCell, onFire
             </h2>
             <div className='z-10 p-2 row-start-2 col-start-2 grid grid-flow-col justify-start w-full'>
                 {colTags.map((tag) =>
-                    <Tag
+                    <BoardTag
                         classes='flex items-center min-h-16 h-fit max-h-32 w-12 first:rounded-l last:rounded-r bg-tagBg border-r border-t border-b first:border-l overflow-clip whitespace-nowrap text-ellipsis'
-                        key={uuidv4()}
+                        key={tag}
                         tag={tag}
                     />
                 )}
             </div>
             <div className='z-10 p-2 row-start-3 col-start-1 grid justify-start'>
                 {rowTags.map((tag) =>
-                    <Tag
+                    <BoardTag
                         classes='flex items-center w-32 h-12 first:rounded-t last:rounded-b bg-tagBg border-l border-t border-r last:border-b overflow-hidden whitespace-nowrap text-ellipsis'
-                        key={uuidv4()}
+                        key={tag}
                         tag={tag}
                     />
                 )}
@@ -57,4 +56,4 @@ const Board = ({boardTitle, rowTags, colTags, cellData, onMouseEnterCell, onFire
     )
 }
 
-export default Board
+export default PlayerBoard

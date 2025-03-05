@@ -1,15 +1,15 @@
 import {useEffect, useState} from "react";
-import Footer from "../components/Footer.tsx";
+import Footer from "../../components/Footer.tsx";
 import {Link, useParams} from "react-router-dom";
-import Lobby from "../components/Lobby.tsx";
-import ShipSetup from "../components/ShipSetup.tsx";
-import {closeHub, getHubConnectionState, invokeHubEvent, joinHub, onHubClose, onHubEvent} from "../hubs/gameHub.tsx";
-import GameBoards from "../components/GameBoards.tsx";
-import SessionError from "../components/SessionError.tsx";
-import SessionMessage from "../components/SessionMessage.tsx";
-import {EClientState, EGameState} from "../common/Enums.ts";
+import Lobby from "./components/Lobby/Lobby.tsx";
+import ShipSetup from "./components/ShipSetup/ShipSetup.tsx";
+import {closeHub, getHubConnectionState, invokeHubEvent, joinHub, onHubClose, onHubEvent} from "../../services/gameHub.tsx";
+import GameBoard from "./components/GameBoard/GameBoard.tsx";
+import SessionError from "./components/Lobby/SessionError.tsx";
+import SessionMessage from "./components/Lobby/SessionMessage.tsx";
+import {EClientState, EGameState} from "../../enums/Enums.ts";
 
-const Game = ()=>{
+const GamePage = ()=>{
     // State
     const [clientState, setClientState] = useState<EClientState|null>(null);
     const [gameState, setGameState] = useState<EGameState>(EGameState.Lobby);
@@ -155,8 +155,8 @@ const Game = ()=>{
                 {
                     gameState == EGameState.Lobby && <Lobby validId={validId}/> 
                     || gameState == EGameState.FleetSetup && <ShipSetup clientState={clientState}/>
-                    || gameState == EGameState.GameOnGoing && <GameBoards playerState={clientState} /> 
-                    || gameState == EGameState.GameOver && <GameBoards playerState={clientState}/>
+                    || gameState == EGameState.GameOnGoing && <GameBoard playerState={clientState} />
+                    || gameState == EGameState.GameOver && <GameBoard playerState={clientState}/>
                 }
             </main>
             <Footer/>
@@ -164,4 +164,4 @@ const Game = ()=>{
     )
 }
 
-export default Game;
+export default GamePage;

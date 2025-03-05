@@ -5,7 +5,7 @@ type props = {
     text: string,
 }
 
-const LobbyButton = ({route, text} : props) => {
+const HomePageButton = ({route, text} : props) => {
     return(
         <div className="px-4 w-full h-full flex justify-center items-center">
             <Link
@@ -17,4 +17,4 @@ const LobbyButton = ({route, text} : props) => {
     )
 }
 
-export default LobbyButton;
+export default HomePageButton;

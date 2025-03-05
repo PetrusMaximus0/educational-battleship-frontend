@@ -1,4 +1,4 @@
-import {ECellState, EShipType} from "./Enums.ts";
+import {ECellState, EShipType} from "../enums/Enums.ts";
 
 export type CellData = {
     index: number,
@@ -39,7 +39,7 @@ export type ShipData = {
 export type ShipPoolItem = {ship: ShipData, placed: boolean};
 export type ShipPool =  ShipPoolItem[];
 
-// Tag setup
+// BoardTag setup
 export type tagTemplate = {
     id: string,
     name: string,

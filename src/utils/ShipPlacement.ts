@@ -1,5 +1,5 @@
-import {CellData, ShipData} from "../common/types";
-import {ECellState} from "../common/Enums.ts";
+import {CellData, ShipData} from "../types/types.tsx";
+import {ECellState} from "../enums/Enums.ts";
 
 const inBounds = (coord: number, ort: number, len: number, boardDim: number) => {
     const maxCoord = coord + ort * (len - 1);

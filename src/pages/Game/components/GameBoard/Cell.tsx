@@ -1,9 +1,9 @@
 import Icon from "@mdi/react";
 import {mdiBullseye, mdiEraser, mdiFlagVariant} from "@mdi/js";
-import {CellData} from '../common/types.tsx'
+import {CellData} from '../../../../types/types.tsx'
 import ActionBtn from "./ActionBtn.tsx";
 import React, { useState } from "react";
-import {ECellState} from "../common/Enums.ts";
+import {ECellState} from "../../../../enums/Enums.ts";
 
 type Props = {
     data: CellData,
