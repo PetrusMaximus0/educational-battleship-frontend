@@ -6,6 +6,7 @@ import {invokeHubEvent, onHubEvent} from "../../../../services/gameHub.tsx";
 import {isValidShipPlacement, rotateShip} from "../../../../utils/ShipPlacement.ts";
 import {useParams} from "react-router-dom";
 import {ECellState, EClientState, EFleetSetupState} from "../../../../enums/Enums.ts";
+import ShipBrush from "./ShipBrush.tsx";
 
 type props ={
     clientState : EClientState | null,
@@ -238,22 +239,6 @@ const ShipSetup = ({clientState}: props) => {
         e.preventDefault();
     }
 
-    const getShipStyleTransform = () => {
-        if (!selectedShip) return "translate(-50%, -50%) rotate(0deg)";
-
-        const ort = selectedShip.orientation;
-        // Determine rotation and offsets based on orientation
-        if (ort[0] === -1) {
-            return `translate(calc(-50% - 50px), -50%) rotate(180deg)`; // West
-        } else if (ort[1] === 1) {
-            return `translate(-50%, calc(-50% + 50px)) rotate(90deg)`; // South
-        } else if (ort[1] === -1) {
-            return `translate(-50%, calc(-50% - 50px)) rotate(-90deg)`; // North
-        } else {
-            return `translate(calc(-50% + 50px), -50%) rotate(0deg)`; // East
-        }
-    };
-
     const submitFleetSetup = async () =>{
         // Ignore request if we are not at "placed" state.
         if(setupState !== EFleetSetupState.placed) return;
@@ -411,23 +396,8 @@ const ShipSetup = ({clientState}: props) => {
                         }
                     </section>
             </div>
-            {
-                selectedShip &&
-                <div
-                    className={`absolute pointer-events-none`}
-                    id={"ShipBrush"}
-                    style={{
-                        zIndex: 10000,
-                        left: `${shipBrushPos.x}px`,
-                        top: `${shipBrushPos.y}px`,
-                        transform: getShipStyleTransform(),
-                        transformOrigin: "center center"
-                    }}
-                > 
-                    <Ship data={selectedShip} isPlaced={true}/> 
-                </div> 
-            }
-            { error && <p className={"my-4 text-xl text-red-600 text-center"}>Error: {error.message} </p> }        
+            <ShipBrush selectedShip={selectedShip} shipBrushPos={shipBrushPos} />
+            { error && <p className={"my-4 text-xl text-red-600 text-center"}>Error: {error.message} </p> }
         </div>
     )
 }
