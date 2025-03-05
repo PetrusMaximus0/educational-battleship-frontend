@@ -5,7 +5,7 @@ import TagColumn from "./components/TagSetup/TagColumn.tsx";
 import {invokeHubEvent, joinHub, onHubEvent} from "../../services/gameHub.tsx";
 import TagTemplateForm from "./components/TagSetup/TagTemplateForm.tsx";
 import {tagTemplate} from "../../types/types.tsx";
-import BaseLayout from "../../layouts/BaseLayout.tsx";
+import TagSetupLayout from "../../layouts/TagSetupLayout.tsx";
 
 const TagSetupPage = () => {
     const [rowTags, setRowTags] = useState<string[]>([]);
@@ -72,7 +72,7 @@ const TagSetupPage = () => {
     }
 
     return (
-        <BaseLayout headerTitle={"BoardTag Setup"}>
+        <TagSetupLayout headerTitle={"BoardTag Setup"}>
             <section className='flex flex-col justify-start gap-6' >
                 <h2 className={"text-4xl text-center"}> Current Tag Selection </h2>
                 <div className={"bg-BgA grid grid-cols-2 justify-center items-start gap-6 border w-fit mx-auto px-4 py-4 rounded-md"}>
@@ -103,7 +103,7 @@ const TagSetupPage = () => {
                     Begin Game
                 </button>
             </section>
-        </BaseLayout>
+        </TagSetupLayout>
     )
 }
 

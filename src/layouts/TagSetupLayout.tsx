@@ -7,7 +7,7 @@ type props = {
     headerTitle: string,
 }
 
-const BaseLayout = ({children, headerTitle} : props) => {
+const TagSetupLayout = ({children, headerTitle} : props) => {
     return(
         <div className='grid grid-rows-[auto_1fr_auto] gap-y-10 h-full min-h-screen bg-BgB text-white'>
             <header className='bg-BgA py-8 px-8 flex flex-col items-center justify-center gap-6'>
@@ -25,4 +25,4 @@ const BaseLayout = ({children, headerTitle} : props) => {
     )
 }
 
-export default BaseLayout;
+export default TagSetupLayout;
