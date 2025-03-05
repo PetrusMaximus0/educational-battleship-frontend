@@ -18,7 +18,8 @@ const stopConnection = async () => {
         }
     }
 }
-/** Starts a connection to the server. 
+
+/** Starts a connection to the server.
  * Handles errors and returns an object of type {conn: HubConnection | null, error: Error | null}
  * where at least one of the elements is not null. 
  */
@@ -55,6 +56,7 @@ const joinHub : JoinHubResp  = async () => {
         return {connection: null, error: returnedErr};
     }
 }
+
 /** Handle client request to close the hub. */
 const closeHub = async () => {
     if(!connectionInstance) {
@@ -72,6 +74,7 @@ const closeHub = async () => {
         connectionInstance = null;
     }
 }
+
 /** Bind handler to the Hub connection close event*/
 const onHubClose = (retry : boolean = true, handleOnClose?: OnHubEventHandler, ...handlerArgs: any[]) => {
     // Return and do nothing if the connection is not valid.
@@ -82,6 +85,7 @@ const onHubClose = (retry : boolean = true, handleOnClose?: OnHubEventHandler, .
         if(retry && connectionInstance) await connectionInstance.start();
     })        
 } 
+
 /** Binds events based on a connection */
 const onHubEvent = (eventName: string, callback: OnHubEventHandler) =>{
     if(!connectionInstance) return;
@@ -98,6 +102,7 @@ const offHubEvent = (eventName: string, callback: OnHubEventHandler) =>{
 const getHubConnectionState = () =>{
     return connectionInstance ? connectionInstance.state : null;
 }
+
 /***/
 const invokeHubEvent = async (eventName: string, ...eventArgs: any[]) => {
     try {
@@ -118,5 +123,6 @@ const invokeHubEvent = async (eventName: string, ...eventArgs: any[]) => {
         return {error: returnedErr};
     }
 }
+
 /***/
 export {invokeHubEvent, onHubEvent, offHubEvent, onHubClose, closeHub, joinHub, getHubConnectionState}
