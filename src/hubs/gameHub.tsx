@@ -29,7 +29,7 @@ const joinHub : JoinHubResp  = async () => {
     try{
         if(!connectionInstance) {
             const apiURL: string  = import.meta.env.VITE_API_URL;
-            if(!apiURL) throw new Error("Missing API URL");
+            if(!apiURL) return{connection: null, error: new Error("Missing API URL")};
             
             // Create a new connection
             connectionInstance =
