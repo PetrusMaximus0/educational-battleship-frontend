@@ -2,7 +2,6 @@ import GamePage from "./pages/Game/GamePage.tsx"
 import HomePage from './pages/Home/HomePage.tsx'
 import ErrorPage from './pages/Error/ErrorPage.tsx'
 import TagSetupPage from "./pages/TagSetup/TagSetupPage.tsx";
-import ClientConnectRedirectPage from "./pages/ClientConnectRedirect/ClientConnectRedirectPage.tsx";
 
 export const routes = [
     {
@@ -12,10 +11,6 @@ export const routes = [
     {
         path: "/game/tag-setup",
         element: <TagSetupPage/>        
-    },
-    {
-        path: "/game/client/connect/:id",
-        element: <ClientConnectRedirectPage/>
     },
     {
         path: "/game/:id",
