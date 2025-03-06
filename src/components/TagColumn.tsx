@@ -1,4 +1,5 @@
 import TagInputForm from "./TagInputForm.tsx";
+import {v4 as uuidv4} from "uuid";
 
 type props = {
     title : string;
@@ -24,7 +25,7 @@ const TagColumn = ({title, tags, handleRemoveTag, handleAddTag }: props ) => {
                     {tags.map(tag =>
                         <li
                             className={"flex gap-4 justify-between"}
-                            key={tag}
+                            key={uuidv4()}
                         >
                             <p> {tag} </p>
                             <button

@@ -1,6 +1,7 @@
 import {CellData} from '../common/types';
 import Cell from './Cell';
 import Tag from './Tag';
+import {v4 as uuidv4} from "uuid";
 
 type Props = {
     boardTitle: string;
@@ -24,7 +25,7 @@ const Board = ({boardTitle, rowTags, colTags, cellData, onMouseEnterCell, onFire
                 {colTags.map((tag) =>
                     <Tag
                         classes='flex items-center min-h-16 h-fit max-h-32 w-12 first:rounded-l last:rounded-r bg-tagBg border-r border-t border-b first:border-l overflow-clip whitespace-nowrap text-ellipsis'
-                        key={tag}
+                        key={uuidv4()}
                         tag={tag}
                     />
                 )}
@@ -33,7 +34,7 @@ const Board = ({boardTitle, rowTags, colTags, cellData, onMouseEnterCell, onFire
                 {rowTags.map((tag) =>
                     <Tag
                         classes='flex items-center w-32 h-12 first:rounded-t last:rounded-b bg-tagBg border-l border-t border-r last:border-b overflow-hidden whitespace-nowrap text-ellipsis'
-                        key={tag}
+                        key={uuidv4()}
                         tag={tag}
                     />
                 )}
