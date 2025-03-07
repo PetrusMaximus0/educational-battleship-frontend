@@ -3,7 +3,7 @@ import {EClientState, EGameState} from "../../../enums/Enums.ts";
 import {useParams} from "react-router-dom";
 import {getHub} from "../../../services/hubProvider.ts";
 
-const useGameHub = () => {
+const useGameHub = ({local = false}:{local:boolean}) => {
     // State
     const [clientState, setClientState] = useState<EClientState|null>(null);
     const [gameState, setGameState] = useState<EGameState>(EGameState.Lobby);
@@ -11,7 +11,7 @@ const useGameHub = () => {
     const [serverMessage, setServerMessage] = useState<string>("Waiting for server...");
     const [validId, setValidId] = useState<boolean>(true);
     const {id} = useParams();
-    const { invokeHubEvent, onHubEvent, onHubClose, closeHub, joinHub, getHubConnectionState } = getHub(id==="local");
+    const { invokeHubEvent, onHubEvent, offHubEvent, onHubClose, closeHub, joinHub, getHubConnectionState } = getHub(local);
 
     // Handlers
     const leaveSession = useCallback(async () => await closeHub() ,[closeHub]);
@@ -50,36 +50,51 @@ const useGameHub = () => {
 
     // Register hub event handlers
     useEffect(()=>{
-        // Handle received errors from the hub
-        onHubEvent("Error", (message: string)=> {
+        const handleErrorHubEvent = (message: string)=> {
             setSessionError(new Error(message));
-        })
-
-        // Handle disconnects and reconnects.
-        onHubClose(false, ()=> {
+        }
+        const handleHubClose = ()=> {
             setSessionError(new Error("Lost connection to hub!"))
             setClientState(null);
-        })
+        }
 
-        // Receive client state update.
-        onHubEvent("ClientStateUpdate", (state: number, message: string)=>{
+        const handleClientStateUpdate = (state: number, message: string)=>{
             setClientState(state as EClientState);
             if(message) setServerMessage(message);
-        })
+        }
 
-        // Receive game state update. Both clients should receive this at the same time.
-        onHubEvent("GameStateUpdate", (state: number, message: string)=>{
+        const handleGameStateUpdate = (state: number, message: string)=>{
             setGameState(state as EGameState);
             if(message) setServerMessage(message);
-        })
+        }
 
-        // Session not found event.
-        onHubEvent("SessionNotFound", () => {
+        const handleSessionNotFound = () => {
             setValidId(false);
             setSessionError(new Error("Session Not Found"));
-        })
+        }
 
-    },[])
+        // Handle received errors from the hub
+        onHubEvent("Error", handleErrorHubEvent);
+
+        // Handle disconnects and reconnects.
+        onHubClose(false, handleHubClose)
+
+        // Receive client state update.
+        onHubEvent("ClientStateUpdate", handleClientStateUpdate);
+
+        // Receive game state update. Both clients should receive this at the same time.
+        onHubEvent("GameStateUpdate", handleGameStateUpdate );
+
+        // Session not found event.
+        onHubEvent("SessionNotFound", handleSessionNotFound)
+
+        return () => {
+            offHubEvent("Error", handleErrorHubEvent);
+            offHubEvent("ClientStateUpdate", handleClientStateUpdate);
+            offHubEvent("GameStateUpdate", handleGameStateUpdate );
+            offHubEvent("SessionNotFound", handleSessionNotFound)
+        }
+    },[offHubEvent, onHubEvent, onHubClose])
 
     //
     return {leaveSession, clientState, gameState, sessionError, validId, serverMessage}

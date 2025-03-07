@@ -9,8 +9,12 @@ export const routes = [
         element: <HomePage />,
     },
     {
-        path: "/game/tag-setup",
-        element: <TagSetupPage/>        
+        path: "/game/tag-setup/",
+        element: <TagSetupPage localGame={false}/>
+    },
+    {
+        path: "/game/tag-setup/local",
+        element: <TagSetupPage localGame={true}/>
     },
     {
         path: "/game/:id",

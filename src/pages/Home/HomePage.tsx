@@ -17,7 +17,7 @@ const HomePage = () => {
                     <hr className='border-1 w-full' />
                     <JoinGameForm />
                     <hr className='border-1 w-full' />
-                    <HomePageButton route={"/game/local"} text={"Local Play"}/>
+                    <HomePageButton route={"/game/tag-setup/local"} text={"Local Play"}/>
                     <hr className='border-1 w-full' />
                     <HomePageButton route={"/game/tag-setup"} text={" Host Game"}/>
                 </section>

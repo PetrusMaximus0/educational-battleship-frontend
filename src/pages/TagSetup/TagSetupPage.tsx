@@ -2,17 +2,18 @@ import {useNavigate} from "react-router-dom";
 import {emptyBoards} from "../../utils/BoardInit.ts";
 import {useEffect, useState} from "react";
 import TagColumn from "./components/TagSetup/TagColumn.tsx";
-import {invokeHubEvent, joinHub, onHubEvent} from "../../services/gameHub.tsx";
 import TagTemplateForm from "./components/TagSetup/TagTemplateForm.tsx";
 import {tagTemplate} from "../../types/types.tsx";
 import TagSetupLayout from "../../layouts/TagSetupLayout.tsx";
+import { getHub } from "../../services/hubProvider.ts";
 
-const TagSetupPage = () => {
+const TagSetupPage = ({localGame} : {localGame: boolean}) => {
     const [rowTags, setRowTags] = useState<string[]>([]);
     const [colTags, setColTags] = useState<string[]>([]);
     const [error, setError] = useState<Error|null>(null);
 
     const navigate = useNavigate();
+    const {joinHub, onHubEvent, invokeHubEvent} = getHub(localGame);
 
     const handleRemoveColTag = (tag: string) => {
         const newColTags = colTags.filter((val)=> val !== tag);
