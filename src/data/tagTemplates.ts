@@ -1,27 +1,100 @@
 import {tagTemplate} from "../types/types.tsx";
 
-const colTagsA: string[] = [
-    "I",
-    "You",
-    "He",
-    "She",
-    "It",
-    "We",
-    "They"
-];
-
-const rowTagsA: string[] = [
-    "A cat",
-    "A dog",
-    "A parrot",
-    "A tiger",
-    "A mouse",
-    "A turtle",
-    "A bird"
-];
+let id = 0;
+function getId () {
+    id = id+1;
+    return `${id}`
+}
 
 export const templates : tagTemplate[] = [
-    {id: "1", name: "Template A", rows: rowTagsA, cols: colTagsA},
-    {id: "2", name: "Template B", rows: rowTagsA, cols: rowTagsA},
-    {id: "3", name: "Template C", rows: colTagsA, cols: rowTagsA}
+    {
+        id: getId(),
+        name: "Template A",
+        rows: ["A cat", "A dog", "A parrot", "A tiger", "A mouse", "A turtle", "A bird" ],
+        cols: ["I", "You", "He", "She", "It", "We", "They"],
+    },
+    {
+        id: getId(),
+        name: "Daily Routine - Present Simple",
+        rows: [
+            "(wake up) at 10 o'clock",
+            "(have) a shower everyday",
+            "(make) breakfast in the morning",
+            "(brush) my teeth twice a day",
+            "(walk) my dog in the morning",
+            "(go) to school five times a week",
+            "(do) homework in the evenings",
+            "(read) a lot of books",
+            "(wash) my clothes once a week",
+            "(clean) the car",
+        ],
+        cols: [
+            "I",
+            "You",
+            "He",
+            "They",
+            "She",
+            "We",
+            "My dog",
+            "My grandma",
+            "My parents",
+            "My grandpa",
+        ]
+    },
+    {
+        id: getId(),
+        name: "Possessive Pronouns and Demonstratives #1",
+        rows: [
+            "(are/is) (I)",
+            "(are/is) (you)",
+            "(are/is) (she)",
+            "(are/is) (he)",
+            "(are/is) (we)",
+            "(are/is) (Miłosz)",
+            "(are/is) (grandma)",
+            "(are/is) (dog)",
+            "(are/is) (they)",
+            "(are/is) (grandpa)",
+        ],
+        cols: [
+            "This cat",
+            "That cake",
+            "These flowers",
+            "Those cars",
+            "This book",
+            "That game",
+            "These balls",
+            "Those notebooks",
+            "This computer",
+            "That bag",
+        ]
+    },
+    {
+        id: getId(),
+        name: "Possessive Pronouns and Demonstratives #2",
+        rows: [
+            "(I) cat(s)",
+            "(you) cake(s)",
+            "(she) cookie(s)",
+            "(he) car(s)",
+            "(we) book(s)",
+            "(Miłosz) game(s)",
+            "(grandma) flower(s)",
+            "(dog) notebooks(s)",
+            "(they) computer(s)",
+            "(grandpa) bag(s)",
+        ],
+        cols: [
+            "This is",
+            "That is",
+            "These are",
+            "Those are",
+            "This is",
+            "That is",
+            "These are",
+            "Those are",
+            "This is",
+            "That is",
+        ]
+    }
 ]
