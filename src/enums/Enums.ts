@@ -38,9 +38,9 @@ export enum ECellState {
 }
 
 export enum EShipType{
-    destroyer,
-    submarine,
-    carrier,
-    frigate,
-    battleship,
+    destroyer="destroyer",
+    submarine="submarine",
+    carrier="carrier",
+    frigate="frigate",
+    battleship="battleship",
 }
