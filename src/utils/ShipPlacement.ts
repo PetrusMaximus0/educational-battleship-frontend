@@ -1,5 +1,6 @@
 import {CellData, ShipData} from "../types/types.tsx";
 import {ECellState} from "../enums/Enums.ts";
+import {shipTemplates} from "../data/shipTemplates.ts";
 
 const inBounds = (coord: number, ort: number, len: number, boardDim: number) => {
     const maxCoord = coord + ort * (len - 1);
@@ -62,3 +63,26 @@ export const rotateShip = (candidateShip: ShipData) => {
         candidateShip.orientation = [1,0];
     }
 } 
+
+export const getNewShipPool = (boardHeight: number, boardWidth: number) =>{
+    // Get the default ship list.
+    const availableShips = shipTemplates;
+
+    //
+    const shipPool : ShipData[] = [];
+
+    // Obtain available points to select ships.
+    let shipPoints = boardWidth * boardHeight * 17.0 / 64.0;  // We are okay with truncating the remainder.
+
+    // Allocate ships from the template to the ship pool
+    // Reset ship pool if current.
+    availableShips.forEach(ship=>
+    {
+        if (shipPoints >= ship.numberOfSections)
+        {
+            shipPoints -= ship.numberOfSections;
+            shipPool.push(ship);
+        }
+    })
+    return shipPool;
+}
