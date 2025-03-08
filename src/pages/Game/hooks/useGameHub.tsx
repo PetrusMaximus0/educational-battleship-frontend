@@ -3,7 +3,7 @@ import {EClientState, EGameState} from "../../../enums/Enums.ts";
 import {useParams} from "react-router-dom";
 import {getHub} from "../../../services/hubProvider.ts";
 
-const useGameHub = ({local = false}:{local:boolean}) => {
+const useGameHub = (local : boolean) => {
     // State
     const [clientState, setClientState] = useState<EClientState|null>(null);
     const [gameState, setGameState] = useState<EGameState>(EGameState.Lobby);
@@ -53,6 +53,7 @@ const useGameHub = ({local = false}:{local:boolean}) => {
         const handleErrorHubEvent = (message: string)=> {
             setSessionError(new Error(message));
         }
+
         const handleHubClose = ()=> {
             setSessionError(new Error("Lost connection to hub!"))
             setClientState(null);
@@ -63,7 +64,7 @@ const useGameHub = ({local = false}:{local:boolean}) => {
             if(message) setServerMessage(message);
         }
 
-        const handleGameStateUpdate = (state: number, message: string)=>{
+        const handleGameStateUpdate = (state: number, message: string)=> {
             setGameState(state as EGameState);
             if(message) setServerMessage(message);
         }
