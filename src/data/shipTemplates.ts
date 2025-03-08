@@ -2,7 +2,7 @@ import { EShipType } from "../enums/Enums.ts";
 import {ShipData} from "../types/types.tsx";
 
 let id = 0;
-const getId = ()=> `${++id}`;
+const getId = ()=> `ship${++id}`;
 
 export const shipTemplates : ShipData[] =
     [

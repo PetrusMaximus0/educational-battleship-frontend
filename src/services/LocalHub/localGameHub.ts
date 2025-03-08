@@ -42,9 +42,16 @@ const localEventHandlers : registeredEvent = {
     "JoinSession": handleJoinSession,
     "FleetSetup": handleFleetSetupInit,
 };
-
+const stopConnection = () => {
+    closeHub();
+};
 type JoinHubResp = () => { error: null|Error };
 const joinHub : JoinHubResp  = () => {
+    // Add cleanup event listeners for connection stopping.
+    window.addEventListener("beforeunload", stopConnection);
+    window.addEventListener("pagehide", stopConnection);
+    window.addEventListener("popstate", stopConnection);
+
     return { error: null }
 }
 
@@ -52,12 +59,15 @@ const joinHub : JoinHubResp  = () => {
 const closeHub = async () => {
     // Clears all registered events.
     Object.keys(clientEventHandlers).forEach(key=>delete clientEventHandlers[key]);
+
+    // Clear the game session variable.
+    gameSession = null;
+    console.log("Hub Closed")
 }
 
 /** Bind handler to the Hub connection close event*/
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const onHubClose = (_retry : boolean = true, _handleOnClose?: LocalHubEventHandler, ..._handlerArgs: any[]) => {
-    console.log("dummy event handler");
 }
 
 /** Binds events based on a connection */
