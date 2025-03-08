@@ -1,6 +1,9 @@
+// TODO: Ship setup events.
+// TODO: Game play events.
+
 import {GameSession} from "./GameSession.ts";
 
-let gameSession = null;
+let gameSession : GameSession | null = null;
 
 // Types
 type LocalHubEventHandler = (...args: any[]) => void;
@@ -9,7 +12,7 @@ type registeredEvent = { [key: string]: LocalHubEventHandler}
 /** Local Hub event handlers */
 const handleRequestSession = (rowTags: string[], colTags: string[]) => {
     // Create a new session based on the tags.
-    gameSession = new GameSession(rowTags, colTags);
+    if(!gameSession) gameSession = new GameSession(rowTags, colTags);
 
     // Send a session ID = "local" to the client.
     emitHubEvent("ReceiveSessionId", "local");
@@ -23,9 +26,10 @@ const localEventHandlers : registeredEvent = {
     "RequestNewSession": handleRequestSession,
 };
 
-
 type JoinHubResp = () => { error: null|Error };
-const joinHub : JoinHubResp  = () => { return { error: null } }
+const joinHub : JoinHubResp  = () => {
+    return { error: null }
+}
 
 /** Handle client request to close the hub. */
 const closeHub = async () => {
@@ -39,7 +43,6 @@ const onHubClose = (_retry : boolean = true, _handleOnClose?: LocalHubEventHandl
     console.log("dummy event handler");
 }
 
-
 /** Binds events based on a connection */
 const onHubEvent = (eventName: string, callback: LocalHubEventHandler) => {
     clientEventHandlers[eventName] = callback;
@@ -52,7 +55,7 @@ const offHubEvent = (eventName: string, _callback: LocalHubEventHandler) => {
 }
 
 /***/
-const getHubConnectionState = () => "Local";
+const getHubConnectionState = () => "Connected";
 
 /***/
 const invokeHubEvent = async (eventName: string, ...eventArgs: any[]) => {
