@@ -2,6 +2,7 @@
 // TODO: Game play events.
 
 import {GameSession} from "./GameSession.ts";
+import {getNewShipPool} from "../../utils/ShipPlacement.ts";
 
 let gameSession : GameSession | null = null;
 
@@ -18,12 +19,28 @@ const handleRequestSession = (rowTags: string[], colTags: string[]) => {
     emitHubEvent("ReceiveSessionId", "local");
 };
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const handleJoinSession = (_id: string) => {
+    if(!gameSession) return;
+    emitHubEvent("GameStateUpdate", gameSession.gameState);
+    emitHubEvent("ClientStateUpdate", gameSession.clientState);
+}
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const handleFleetSetupInit = (_id : string) => {
+    if(!gameSession) return;
+    const shipData = getNewShipPool(gameSession.rowTags.length, gameSession.colTags.length);
+    emitHubEvent("BeginFleetSetup", gameSession.rowTags, gameSession.colTags, gameSession.playerBoard, shipData)
+}
+
 /** Stores all event handlers registered by the Client */
 const clientEventHandlers : registeredEvent = { };
 
 /** Stores all event handlers registered in the Hub */
 const localEventHandlers : registeredEvent = {
     "RequestNewSession": handleRequestSession,
+    "JoinSession": handleJoinSession,
+    "FleetSetup": handleFleetSetupInit,
 };
 
 type JoinHubResp = () => { error: null|Error };
