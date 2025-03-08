@@ -2,11 +2,11 @@ import Ship from "./Ship.tsx";
 import PlayerBoard from "../GameBoard/PlayerBoard.tsx";
 import React, {useEffect, useState} from "react";
 import {CellData, ShipData, ShipOrientation, ShipPool, ShipPoolItem} from "../../../../types/types.tsx";
-import {invokeHubEvent, onHubEvent} from "../../../../services/gameHub.tsx";
 import {isValidShipPlacement, rotateShip} from "../../../../utils/ShipPlacement.ts";
 import {useParams} from "react-router-dom";
 import {ECellState, EClientState, EFleetSetupState} from "../../../../enums/Enums.ts";
 import ShipBrush from "./ShipBrush.tsx";
+import {getHub} from "../../../../services/hubProvider.ts";
 
 type props ={
     clientState : EClientState | null,
@@ -18,6 +18,7 @@ const ShipSetup = ({clientState}: props) => {
     const [setupState, setSetupState] = useState<EFleetSetupState>(EFleetSetupState.placing);
     
     const { id } = useParams();
+    const { offHubEvent, onHubEvent, invokeHubEvent } = getHub(id==="local");
 
     //
     const [rowTags, setRowTags] = useState<string[]>([]);
@@ -287,12 +288,17 @@ const ShipSetup = ({clientState}: props) => {
         // Bind hub events.
         onHubEvent("BeginFleetSetup", handleBeginFleetSetup);
         onHubEvent("Error", handleHubError);
-        
+
         //
         (async ()=>{
             await invokeHubEvent("FleetSetup", id);
-        })()        
-    },[])
+        })()
+
+        return ()=>{
+            offHubEvent("BeginFleetSetup", handleBeginFleetSetup);
+            offHubEvent("Error", handleHubError);
+        }
+    },[id, invokeHubEvent, onHubEvent, offHubEvent]);
 
     useEffect(() => {
         document.addEventListener("keydown", handleKeyDown);
