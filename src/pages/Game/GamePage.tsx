@@ -1,5 +1,5 @@
 import Footer from "../../components/Footer.tsx";
-import { Link } from "react-router-dom";
+import {Link, useParams} from "react-router-dom";
 import Lobby from "./components/Lobby/Lobby.tsx";
 import ShipSetup from "./components/ShipSetup/ShipSetup.tsx";
 import GameBoard from "./components/GameBoard/GameBoard.tsx";
@@ -9,8 +9,9 @@ import {EGameState} from "../../enums/Enums.ts";
 import useGameHub from "./hooks/useGameHub.tsx"
 
 const GamePage = ()=>{
+    const {id} = useParams();
     // State
-    const {leaveSession, clientState, gameState, validId, sessionError, serverMessage} = useGameHub();
+    const {leaveSession, clientState, gameState, validId, sessionError, serverMessage} = useGameHub(id === "local");
 
     return (
         <div className='grid grid-rows-[auto_1fr_auto] items-start gap-y-2 bg-BgB text-white min-h-screen'>
